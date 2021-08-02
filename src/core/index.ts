@@ -1,7 +1,7 @@
 import fastify from 'fastify';
 import config from '../config';
-import { imageController } from './image-controller';
-import { videoController } from './video-controller';
+import { imageController } from './image/image.controller';
+import { videoController } from './video/video.controller';
 
 const server = fastify({ logger: true });
 

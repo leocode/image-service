@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import Boom from 'boom';
-import { adapterParamsSchema, fileBodySchema } from './schemas';
+import { adapterParamsSchema, fileBodySchema } from '../common/schemas';
 
 export async function imageController(fastify: FastifyInstance) {
   fastify.post('/metadata', () => {
