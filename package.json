@@ -10,16 +10,19 @@
     "start:dev": "ts-node-dev src/core/index.ts -P tsconfig.json"
   },
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "1.1.0",
     "boom": "7.3.0",
     "fastify": "3.19.1",
     "fastify-boom": "1.0.0",
     "fastify-multipart": "4.0.7",
+    "fluent-ffmpeg": "2.1.2",
     "sharp": "0.28.3"
   },
   "devDependencies": {
     "@leocode/eslint-config": "1.1.0",
     "@types/boom": "7.3.1",
     "@types/busboy": "0.2.4",
+    "@types/fluent-ffmpeg": "2.1.18",
     "@types/get-image-colors": "4.0.1",
     "@types/jest": "26.0.24",
     "@types/node": "16.3.3",
