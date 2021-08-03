@@ -1,12 +1,13 @@
 import Boom from 'boom';
 import { AdapterErrors } from './adapter.errors';
-import { defaultAdapter } from './default.adapter';
-import type { ADAPTERS } from './adapter.types';
+import type { AdapterType } from './adapter.types';
+import { ADAPTERS } from './adapter.types';
+import { requestReplyAdapter } from './requestReply.adapter';
 
 export const getAdapter = (adapterName: string) => {
-  switch (adapterName as typeof ADAPTERS[number]) {
-    case 'default': {
-      return defaultAdapter;
+  switch (adapterName as AdapterType) {
+    case ADAPTERS.requestReply: {
+      return requestReplyAdapter;
     }
   }
 
