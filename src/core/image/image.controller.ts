@@ -1,11 +1,11 @@
 import type { FastifyInstance } from 'fastify';
 import Boom from 'boom';
 import { adapterParamsSchema, fileBodySchema } from '../common/schemas';
+import { createResizeHandler } from './resize/resize.handler';
+import { createMetadataHandler } from './resize/metadata.handler';
 
-export async function imageController(fastify: FastifyInstance) {
-  fastify.post('/metadata', () => {
-    throw Boom.notImplemented();
-  });
+export const imageController = (fastify: FastifyInstance) => {
+  createMetadataHandler(fastify);
 
   fastify.post(
     '/:adapter/thumbnail',
@@ -33,16 +33,5 @@ export async function imageController(fastify: FastifyInstance) {
     },
   );
 
-  fastify.post(
-    '/:adapter/resize',
-    {
-      schema: {
-        params: adapterParamsSchema,
-        body: fileBodySchema,
-      },
-    },
-    () => {
-      throw Boom.notImplemented();
-    },
-  );
-}
+  createResizeHandler(fastify);
+};

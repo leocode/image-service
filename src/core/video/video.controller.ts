@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import Boom from 'boom';
 import { adapterParamsSchema, fileBodySchema } from '../common/schemas';
 
-export async function videoController(fastify: FastifyInstance) {
+export const videoController = (fastify: FastifyInstance) => {
   fastify.post('/metadata', {}, () => {
     throw Boom.notImplemented();
   });
@@ -32,4 +32,4 @@ export async function videoController(fastify: FastifyInstance) {
       throw Boom.notImplemented();
     },
   );
-}
+};
