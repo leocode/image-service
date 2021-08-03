@@ -14,9 +14,9 @@ describe('ImageService', () => {
       const expectedDimensions = 20;
       const image = await getTestImage();
 
-      const result = imageService.resize(image, {height: expectedDimensions});
+      const resizedImage = imageService.resize(image, {height: expectedDimensions});
 
-      const resizedImageMetadata = await sharp(await streamToBuffer(result)).metadata();
+      const resizedImageMetadata = await sharp(await streamToBuffer(resizedImage)).metadata();
       expect(resizedImageMetadata).toMatchObject({
         width: expectedDimensions,
         height: expectedDimensions,
@@ -26,15 +26,16 @@ describe('ImageService', () => {
 
   describe('#crop', () => {
     it('should crop passed image', async () => {
-      const cropOptions = {top: 1, height: 1, width: 1, left: 1} as Region;
+      const expectedDimensions = 1;
+      const cropOptions = {top: expectedDimensions, height: expectedDimensions, width: expectedDimensions, left: expectedDimensions} as Region;
       const image = await getTestImage();
 
-      const result = imageService.crop(image, cropOptions);
+      const croppedImage = imageService.crop(image, cropOptions);
 
-      const resizedImageMetadata = await sharp(await streamToBuffer(result)).metadata();
-      expect(resizedImageMetadata).toMatchObject({
-        width: 1,
-        height: 1,
+      const croppedImageMetadata = await sharp(await streamToBuffer(croppedImage)).metadata();
+      expect(croppedImageMetadata).toMatchObject({
+        width: expectedDimensions,
+        height: expectedDimensions,
       });
     });
   });
