@@ -9,8 +9,9 @@ export const getTestImage = async (): Promise<Readable> => {
   return Readable.from(image);
 };
 
+export const TEST_IMAGE_PATH = 'test/resources/test-image.jpg';
+
 export const getTestImageBuffer = (): Promise<Buffer> => {
-  const TEST_IMAGE_PATH = 'test/resources/test-image.jpg';
   return fs.promises.readFile(path.join(process.cwd(), TEST_IMAGE_PATH));
 };
 
