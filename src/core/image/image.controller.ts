@@ -4,7 +4,7 @@ import { createMetadataHandler } from './resize/metadata.handler';
 import { createCropHandler } from './resize/crop.handler';
 import { createThumbnailHandler } from './resize/thumbnail.handler';
 
-export const imageController = (fastify: FastifyInstance) => {
+export const imageController = async (fastify: FastifyInstance) => {
   createMetadataHandler('/metadata', fastify);
   createThumbnailHandler('/thumbnail', fastify);
   createCropHandler('/:adapter/crop', fastify);
