@@ -38,7 +38,7 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
         width: resizeOptions.width,
       });
 
-      return adapter.handleFile(file);
+      return await adapter.handleFile(file);
     },
   );
 };

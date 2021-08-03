@@ -9,6 +9,6 @@ export const createMetadataHandler = (
     const fileToProcess = await request.file();
     const imageService = new ImageService();
 
-    return imageService.metadata(fileToProcess.file);
+    return await imageService.metadata(fileToProcess.file);
   });
 };

@@ -29,7 +29,7 @@ export const createThumbnailHandler = (
       const { height, width } = request.query;
       const imageService = new ImageService();
 
-      return imageService.resize(fileToProcess.file, {
+      return await imageService.resize(fileToProcess.file, {
         height,
         width,
       });

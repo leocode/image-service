@@ -41,7 +41,7 @@ export const createCropHandler = (path: string, fastify: FastifyInstance) => {
         width,
       });
 
-      return adapter.handleFile(file);
+      return await adapter.handleFile(file);
     },
   );
 };

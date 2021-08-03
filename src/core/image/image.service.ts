@@ -11,13 +11,14 @@ export class ImageService {
     return file.pipe(sharp().extract(region));
   }
 
-  public metadata(file: Readable): Promise<Metadata> {
-    return new Promise((resolve, reject) => {
+  public async metadata(file: Readable): Promise<Metadata> {
+    return await new Promise((resolve, reject) => {
       file.pipe(
         sharp().metadata((err, metadata) => {
           if (err) {
             reject(err);
           }
+
           resolve(metadata);
         }),
       );

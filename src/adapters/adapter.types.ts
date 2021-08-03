@@ -1,12 +1,13 @@
 import type { Stream } from 'stream';
+import { requestReplyAdapter } from './requestReply.adapter';
 
 export const AdapterEnum = {
-  requestReply: 'request-reply',
+  'request-reply': requestReplyAdapter,
 } as const;
 
-export const ADAPTERS = Object.values(AdapterEnum);
+export const ADAPTERS = Object.keys(AdapterEnum);
 
-export type AdapterType = typeof AdapterEnum[keyof typeof AdapterEnum]
+export type AdapterType = keyof typeof AdapterEnum
 
 export type Adapter = {
   handleFile: (file: Stream) => unknown;
