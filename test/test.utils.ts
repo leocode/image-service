@@ -3,6 +3,7 @@ import { PassThrough, Readable } from 'stream';
 import fs from 'fs';
 import path from 'path';
 import ffmpeg from 'fluent-ffmpeg';
+import sharp from 'sharp';
 
 const TEST_RESOURCES_PATH = path.join(process.cwd(), 'test/resources/');
 
@@ -14,8 +15,8 @@ export const getTestImage = async (): Promise<Readable> => {
   return Readable.from(image);
 };
 
-export const getTestImageBuffer = (): Promise<Buffer> => {
-  return fs.promises.readFile(TEST_IMAGE_PATH);
+export const getTestImageBuffer = async (): Promise<Buffer> => {
+  return await fs.promises.readFile(TEST_IMAGE_PATH);
 };
 
 export const TEST_VIDEO_PATH = path.join(TEST_RESOURCES_PATH, 'test-video.mp4');
@@ -60,6 +61,15 @@ export const streamToBuffer = (stream: Stream): Promise<Buffer> => {
       reject(err);
     });
   });
+};
+
+export const getImageDimensions = async (resizedImage: Stream) => {
+  const dimensions = await sharp(await streamToBuffer(resizedImage)).metadata();
+
+  return {
+    height: dimensions.height,
+    width: dimensions.width,
+  };
 };
 
 export const JPEG_MIME_TYPE = 'image/jpeg';

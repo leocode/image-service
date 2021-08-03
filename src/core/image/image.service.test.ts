@@ -2,10 +2,10 @@ import { ImageService } from './image.service';
 import {
   getTestImage,
   JPEG_MIME_TYPE,
+  getImageDimensions,
   streamToBuffer,
 } from '../../../test/test.utils';
 import type { Region } from 'sharp';
-import sharp from 'sharp';
 
 import getColors from 'get-image-colors';
 import { Orientation } from '../common/common.types';
@@ -25,10 +25,8 @@ describe('ImageService', () => {
         height: expectedDimensions,
       });
 
-      const resizedImageMetadata = await sharp(
-        await streamToBuffer(resizedImage),
-      ).metadata();
-      expect(resizedImageMetadata).toMatchObject({
+      const resizedImageDimensions = await getImageDimensions(resizedImage);
+      expect(resizedImageDimensions).toMatchObject({
         width: expectedDimensions,
         height: expectedDimensions,
       });
@@ -48,10 +46,8 @@ describe('ImageService', () => {
 
       const croppedImage = imageService.crop(image, cropOptions);
 
-      const croppedImageMetadata = await sharp(
-        await streamToBuffer(croppedImage),
-      ).metadata();
-      expect(croppedImageMetadata).toMatchObject({
+      const croppedImageDimensions = await getImageDimensions(croppedImage);
+      expect(croppedImageDimensions).toMatchObject({
         width: expectedDimensions,
         height: expectedDimensions,
       });
@@ -74,8 +70,8 @@ describe('ImageService', () => {
         await streamToBuffer(croppedImage),
         JPEG_MIME_TYPE,
       );
-      expect(colors.length).toEqual(1);
-      expect(colors[0].hex()).toEqual(expectedColor);
+      expect(colors).toHaveLength(1);
+      expect(colors[0].hex()).toBe(expectedColor);
     });
   });
 
