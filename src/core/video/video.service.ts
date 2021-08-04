@@ -12,7 +12,7 @@ const createTempFilename = util.promisify(tmp.tmpName);
 
 type VideoResizeOptions = {
   codecName: string;
-} & ResizeOptions
+} & ResizeOptions;
 
 export class VideoService {
   constructor() {
@@ -40,12 +40,16 @@ export class VideoService {
     });
   }
 
-  public async thumbnail(file: Readable, options: { second: number }): Promise<Stream> {
+  public async thumbnail(
+    file: Readable,
+    options: { second: number },
+  ): Promise<Stream> {
     const tempFileName = `${await createTempFilename()}.png`;
 
     return await new Promise((resolve, reject) => {
       ffmpeg()
-        .input(file).outputOption('-frames:v 1')
+        .input(file)
+        .outputOption('-frames:v 1')
         .output(tempFileName)
         .seek(options.second)
         .on('error', (err) => {
