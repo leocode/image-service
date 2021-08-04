@@ -41,7 +41,7 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
         codecName: resizeOptions.codecName,
       });
 
-      return adapter.handleFile(result);
+      return await adapter.handleFile(result);
     },
   );
 };

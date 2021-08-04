@@ -26,8 +26,8 @@ export class VideoService {
       .pipe();
   }
 
-  public metadata(file: Readable): Promise<FfprobeData> {
-    return new Promise((resolve, reject) => {
+  public async metadata(file: Readable): Promise<FfprobeData> {
+    return await new Promise((resolve, reject) => {
       ffmpeg().input(file).ffprobe((err, data) => {
         if (err) {
           reject(err);
@@ -41,7 +41,7 @@ export class VideoService {
   public async thumbnail(file: Readable, options: { second: number }): Promise<Stream> {
     const tempFileName = `${await createTempFilename()}.png`;
 
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       ffmpeg()
         .input(file).outputOption('-frames:v 1')
         .output(tempFileName)

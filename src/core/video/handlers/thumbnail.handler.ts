@@ -28,7 +28,7 @@ export const createThumbnailHandler = (
       const fileToProcess = await request.file();
       const videoService = new VideoService();
 
-      return videoService.thumbnail(fileToProcess.file, {
+      return await videoService.thumbnail(fileToProcess.file, {
         second: request.query.second ?? DEFAULT_THUMBNAIL_SECOND,
       });
     },

@@ -9,6 +9,6 @@ export const createMetadataHandler = (
     const fileToProcess = await request.file();
     const videoService = new VideoService();
 
-    return videoService.metadata(fileToProcess.file);
+    return await videoService.metadata(fileToProcess.file);
   });
 };
