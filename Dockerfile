@@ -29,8 +29,8 @@ COPY yarn.lock ./
 
 COPY --from=build /usr/src/app/dist /usr/src/app/dist
 
-RUN yarn install --frozen-lockfile && yarn cache clean
+RUN yarn install --frozen-lockfile --production && yarn cache clean
 
-CMD node dist/core/index.js
+CMD yarn start
 
 EXPOSE 3000

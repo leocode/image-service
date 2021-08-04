@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/core/index.js",
+    "start": "node dist/src/core/index.js",
     "lint": "eslint src/**/*.ts",
     "test": "jest",
     "start:dev": "ts-node-dev src/core/index.ts -P tsconfig.json"
