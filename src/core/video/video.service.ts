@@ -3,7 +3,7 @@ import type { Readable } from 'stream';
 import ffmpegBinary from '@ffmpeg-installer/ffmpeg';
 import type { FfprobeData } from 'fluent-ffmpeg';
 import ffmpeg from 'fluent-ffmpeg';
-import fs from 'fs';
+import { Writable } from 'stream';
 
 export class VideoService {
   constructor() {
@@ -15,17 +15,14 @@ export class VideoService {
       ffmpeg()
         .input(file)
         .on('end', () => {
-          resolve(fs.promises.readFile('test.mp4'));
+          resolve(true);
         })
         .on('error', (err) => {
-          console.log('an error happened: ' + err.message);
           reject(err);
         })
         .size(`${options.height}x${options.width}`)
-        .format('mp4')
-        // TODO: Pass stream to fastify response somehow, do not create files
-        .saveToFile('test.mp4');
-
+        .format('h264')
+        .pipe(undefined, {end: true});
     });
   }
 
