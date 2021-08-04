@@ -12,6 +12,7 @@
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "1.1.0",
     "@ffprobe-installer/ffprobe": "1.1.0",
+    "@mcmics/dist-exiftool": "12.24.0",
     "boom": "7.3.0",
     "fastify": "3.19.1",
     "fastify-boom": "1.0.0",

@@ -2,11 +2,16 @@ import type { ResizeOptions } from 'sharp';
 import type { Readable, Stream } from 'stream';
 import ffmpegBinary from '@ffmpeg-installer/ffmpeg';
 import ffprobeBinary from '@ffprobe-installer/ffprobe';
-import type { FfprobeData } from 'fluent-ffmpeg';
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import tmp from 'tmp';
 import util from 'util';
+import type { ExecFileException } from 'child_process';
+import { execFile } from 'child_process';
+import exiftool from '@mcmics/dist-exiftool';
+import Boom from 'boom';
+import { ImageErrors } from '../image/image.errors';
+import type { VideoMetadata } from './video.types';
 
 const createTempFilename = util.promisify(tmp.tmpName);
 
@@ -28,15 +33,42 @@ export class VideoService {
       .pipe();
   }
 
-  public async metadata(file: Readable): Promise<FfprobeData> {
-    return await new Promise((resolve, reject) => {
-      ffmpeg().input(file).ffprobe((err, data) => {
-        if (err) {
-          reject(err);
+  public async metadata(file: Readable): Promise<VideoMetadata> {
+    return new Promise((resolve, reject) => {
+      const extractMetadataFromExifTool: (
+        error: ExecFileException | null,
+        stdout: string,
+        stderr: string
+      ) => void = (error, stdout, stderr) => {
+        if (error) {
+          reject(error);
         }
+        const [metadata] = JSON.parse(stdout);
 
-        resolve(data);
-      });
+        const width = metadata.ImageWidth;
+        const height = metadata.ImageHeight;
+        resolve({
+          width,
+          height,
+          duration: metadata.Duration,
+          orientation: height > width ? 'portrait' : 'landscape',
+          mimeType: metadata.MIMEType,
+        });
+      };
+
+      const exifToolProcess = execFile(
+        exiftool,
+        ['-json', '-'],
+        extractMetadataFromExifTool,
+      );
+
+      if (!exifToolProcess.stdin) {
+        throw Boom.badImplementation(
+          ImageErrors.CannotRunImageProcessingService,
+        );
+      }
+
+      file.pipe(exifToolProcess.stdin);
     });
   }
 

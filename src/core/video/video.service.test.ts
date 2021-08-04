@@ -36,12 +36,16 @@ describe('VideoService', () => {
   describe('#metadata', () => {
     it('should retrieve metadata of passed file', async () => {
       const video = await getTestVideo();
-      const videoToCompare = await getTestVideo();
-      const expectedMetadata = await getVideoMetadata(videoToCompare);
 
       const metadata = await videoService.metadata(video);
 
-      expect(expectedMetadata).toMatchObject(metadata);
+      expect(metadata).toMatchObject({
+        duration: '3.34 s',
+        orientation: 'landscape',
+        width: 1920,
+        height: 1080,
+        mimeType: 'video/mp4',
+      });
     });
   });
 
