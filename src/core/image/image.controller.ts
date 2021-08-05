@@ -5,8 +5,20 @@ import { createCropHandler } from './resize/crop.handler';
 import { createThumbnailHandler } from './resize/thumbnail.handler';
 
 export const imageController = async (fastify: FastifyInstance) => {
-  createMetadataHandler('/metadata', fastify);
-  createThumbnailHandler('/thumbnail', fastify);
-  createCropHandler('/:adapter/crop', fastify);
-  createResizeHandler('/:adapter/resize', fastify);
+  const schema = {
+    tags: ['image'],
+    consumes: ['multipart/form-data'],
+    body: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['file'],
+    },
+  };
+
+  createMetadataHandler('/metadata', fastify, { schema });
+  createThumbnailHandler('/thumbnail', fastify, { schema });
+  createCropHandler('/:adapter/crop', fastify, { schema });
+  createResizeHandler('/:adapter/resize', fastify, { schema });
 };

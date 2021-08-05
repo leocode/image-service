@@ -1,5 +1,6 @@
 import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
+import type { FastifySchema } from 'fastify/types/schema';
 
 const thumbnailQuerySchema = {
   type: 'object',
@@ -14,6 +15,7 @@ type ThumbnailQuery = { width: number; height: number };
 export const createThumbnailHandler = (
   path: string,
   fastify: FastifyInstance,
+  options: { schema: FastifySchema },
 ) => {
   fastify.post<{
     Querystring: ThumbnailQuery;
@@ -22,6 +24,7 @@ export const createThumbnailHandler = (
     {
       schema: {
         querystring: thumbnailQuerySchema,
+        ...options.schema,
       },
     },
     async (request) => {

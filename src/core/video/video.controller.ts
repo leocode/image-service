@@ -4,9 +4,21 @@ import { createResizeHandler } from './handlers/resize.handler';
 import { createThumbnailHandler } from './handlers/thumbnail.handler';
 
 export const videoController = async (fastify: FastifyInstance) => {
-  createMetadataHandler('/metadata', fastify);
+  const schema = {
+    tags: ['video'],
+    consumes: ['multipart/form-data'],
+    body: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+      required: ['file'],
+    },
+  };
 
-  createResizeHandler('/:adapter/resize', fastify);
+  createMetadataHandler('/metadata', fastify, { schema });
 
-  createThumbnailHandler('/:adapter/thumbnail', fastify);
+  createResizeHandler('/:adapter/resize', fastify, { schema });
+
+  createThumbnailHandler('/:adapter/thumbnail', fastify, { schema });
 };

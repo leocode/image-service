@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
+import type { FastifySchema } from 'fastify/types/schema';
 
 const thumbnailQuerySchema = {
   type: 'object',
@@ -8,12 +9,13 @@ const thumbnailQuerySchema = {
   },
 };
 
-type ThumbnailQuery = { second: number; };
+type ThumbnailQuery = { second: number };
 const DEFAULT_THUMBNAIL_SECOND = 1;
 
 export const createThumbnailHandler = (
   path: string,
   fastify: FastifyInstance,
+  options: { schema: FastifySchema },
 ) => {
   fastify.post<{
     Querystring: ThumbnailQuery;
@@ -22,6 +24,7 @@ export const createThumbnailHandler = (
     {
       schema: {
         querystring: thumbnailQuerySchema,
+        ...options.schema,
       },
     },
     async (request) => {
