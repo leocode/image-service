@@ -1,5 +1,9 @@
 import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
+import { handleResponse } from '../../common/response.handler';
+import { getAdapter } from '../../../adapters/adapter.utils';
+import type { AdapterParams } from '../../common/schemas';
+import { adapterParamsSchema } from '../../common/schemas';
 
 const thumbnailQuerySchema = {
   type: 'object',
@@ -16,21 +20,27 @@ export const createThumbnailHandler = (
   fastify: FastifyInstance,
 ) => {
   fastify.post<{
+    Params: AdapterParams;
     Querystring: ThumbnailQuery;
   }>(
     path,
     {
       schema: {
+        params: adapterParamsSchema,
         querystring: thumbnailQuerySchema,
       },
     },
-    async (request) => {
+    async (request, reply) => {
       const fileToProcess = await request.file();
       const videoService = new VideoService();
+      const adapterName = request.params.adapter;
+      const adapter = getAdapter(adapterName);
 
-      return await videoService.thumbnail(fileToProcess.file, {
+      const file = await videoService.thumbnail(fileToProcess.file, {
         second: request.query.second ?? DEFAULT_THUMBNAIL_SECOND,
       });
+      const adapterResult = await adapter.handleFile({ file, fileType: 'video', requestBody: request.body });
+      return await handleResponse(adapterResult, reply);
     },
   );
 };

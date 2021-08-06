@@ -1,5 +1,9 @@
 import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
+import { getAdapter } from '../../../adapters/adapter.utils';
+import type { AdapterParams } from '../../common/schemas';
+import { adapterParamsSchema } from '../../common/schemas';
+import { handleResponse } from '../../common/response.handler';
 
 const thumbnailQuerySchema = {
   type: 'object',
@@ -16,23 +20,30 @@ export const createThumbnailHandler = (
   fastify: FastifyInstance,
 ) => {
   fastify.post<{
+    Params: AdapterParams;
     Querystring: ThumbnailQuery;
   }>(
     path,
     {
       schema: {
+        params: adapterParamsSchema,
         querystring: thumbnailQuerySchema,
       },
     },
-    async (request) => {
+    async (request, reply) => {
       const fileToProcess = await request.file();
       const { height, width } = request.query;
       const imageService = new ImageService();
+      const adapterName = request.params.adapter;
+      const adapter = getAdapter(adapterName);
 
-      return imageService.resize(fileToProcess.file, {
+      const file = await imageService.resize(fileToProcess.file, {
         height,
         width,
       });
+
+      const adapterResult = await adapter.handleFile({ file, fileType: 'image', requestBody: request.body });
+      return await handleResponse(adapterResult, reply);
     },
   );
 };
