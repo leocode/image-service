@@ -4,16 +4,15 @@ import { getAdapter } from '../../../adapters/adapter.utils';
 import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
 
-type ResizeQuery = { width: number; height: number, codecName: string };
+type ResizeQuery = { width: number; height: number; codecName: string };
 
 const resizeQuerySchema = {
   type: 'object',
   properties: {
     height: { type: 'number' },
     width: { type: 'number' },
-    codecName: { type: 'string' },
   },
-  required: ['height', 'width', 'codecName'],
+  required: ['height', 'width'],
 };
 
 export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
@@ -38,7 +37,6 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
       const result = await videoService.resize(fileToProcess.file, {
         height: resizeOptions.height,
         width: resizeOptions.width,
-        codecName: resizeOptions.codecName,
       });
 
       return await adapter.handleFile(result);
