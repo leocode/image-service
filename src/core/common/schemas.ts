@@ -1,4 +1,4 @@
-const ADAPTERS = ['foo', 'bar'];
+import { ADAPTERS } from '../../adapters/adapter.types';
 
 export const adapterParamsSchema = {
   type: 'object',
@@ -9,6 +9,8 @@ export const adapterParamsSchema = {
     },
   },
 };
+
+export type AdapterParams = { adapter: string };
 
 export const fileBodySchema = {
   type: 'object',

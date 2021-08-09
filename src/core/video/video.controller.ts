@@ -1,37 +1,11 @@
 import type { FastifyInstance } from 'fastify';
 import Boom from 'boom';
-import { adapterParamsSchema, fileBodySchema } from './schemas';
+import { adapterParamsSchema, fileBodySchema } from '../common/schemas';
 
-export async function imageController(fastify: FastifyInstance) {
-  fastify.post('/metadata', () => {
+export const videoController = async (fastify: FastifyInstance) => {
+  fastify.post('/metadata', {}, () => {
     throw Boom.notImplemented();
   });
-
-  fastify.post(
-    '/:adapter/thumbnail',
-    {
-      schema: {
-        params: adapterParamsSchema,
-        body: fileBodySchema,
-      },
-    },
-    () => {
-      throw Boom.notImplemented();
-    },
-  );
-
-  fastify.post(
-    '/:adapter/crop',
-    {
-      schema: {
-        params: adapterParamsSchema,
-        body: fileBodySchema,
-      },
-    },
-    () => {
-      throw Boom.notImplemented();
-    },
-  );
 
   fastify.post(
     '/:adapter/resize',
@@ -45,4 +19,17 @@ export async function imageController(fastify: FastifyInstance) {
       throw Boom.notImplemented();
     },
   );
-}
+
+  fastify.post(
+    '/:adapter/thumbnail',
+    {
+      schema: {
+        params: adapterParamsSchema,
+        body: fileBodySchema,
+      },
+    },
+    () => {
+      throw Boom.notImplemented();
+    },
+  );
+};

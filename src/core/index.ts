@@ -1,12 +1,13 @@
 import fastify from 'fastify';
 import config from '../config';
-import { imageController } from './image-controller';
-import { videoController } from './video-controller';
+import { imageController } from './image/image.controller';
+import { videoController } from './video/video.controller';
+import fastifyMultipart from 'fastify-multipart';
 
 const server = fastify({ logger: true });
 
 server.register(require('fastify-boom'));
-server.register(require('fastify-file-upload'));
+server.register(fastifyMultipart);
 
 server.register(imageController, { prefix: '/image' });
 server.register(videoController, { prefix: '/video' });
