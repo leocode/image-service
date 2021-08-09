@@ -1,1 +1,4 @@
-export type Orientation = 'landscape' | 'portrait';
+export enum Orientation {
+  Landscape = 'landscape',
+  Portrait = 'portrait',
+}
