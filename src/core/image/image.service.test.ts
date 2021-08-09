@@ -4,6 +4,7 @@ import type { Region } from 'sharp';
 import sharp from 'sharp';
 
 import getColors from 'get-image-colors';
+import { Orientation } from '../common/common.types';
 
 describe('ImageService', () => {
   let imageService: ImageService;
@@ -81,7 +82,7 @@ describe('ImageService', () => {
       const metadata = await imageService.metadata(image);
 
       expect(metadata).toMatchObject({
-        orientation: 'landscape',
+        orientation: Orientation.Landscape,
         width: 200,
         height: 200,
         mimeType: 'image/jpeg',

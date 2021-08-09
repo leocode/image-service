@@ -3,6 +3,8 @@ import { adapterParamsSchema } from '../../common/schemas';
 import { getAdapter } from '../../../adapters/adapter.utils';
 import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
+import Boom from 'boom';
+import { Errors } from '../../common/common.errors';
 
 type ResizeQuery = { width: number; height: number };
 
@@ -28,6 +30,11 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
     },
     async (request) => {
       const fileToProcess = await request.file();
+
+      if (!fileToProcess) {
+        throw Boom.badRequest(Errors.FileIsRequired);
+      }
+
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
       const resizeOptions = request.query;
