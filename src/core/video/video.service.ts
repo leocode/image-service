@@ -6,19 +6,21 @@ import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import tmp from 'tmp';
 import util from 'util';
+import Boom from 'boom';
+import { VideoErrors } from './video.errors';
 
 const createTempFilename = util.promisify(tmp.tmpName);
 
 type VideoResizeOptions = {
   codecName: string;
-} & ResizeOptions
+} & ResizeOptions;
 
 export class VideoService {
   constructor() {
     ffmpeg.setFfmpegPath(ffmpegBinary.path);
   }
 
-  public resize(file: Readable, options: VideoResizeOptions): Stream {
+  public resizeStream(file: Readable, options: VideoResizeOptions): Stream {
     return ffmpeg()
       .input(file)
       .size(`${options.height}x${options.width}`)
@@ -26,24 +28,55 @@ export class VideoService {
       .pipe();
   }
 
+  public async resizeFile(
+    filePath: string,
+    options: ResizeOptions,
+  ): Promise<Stream> {
+    const codecName = await this.getCodecName(fs.createReadStream(filePath));
+
+    if (!codecName) {
+      throw Boom.badRequest(VideoErrors.CannotResolveCodecName);
+    }
+
+    return ffmpeg(filePath)
+      .size(`${options.height}x${options.width}`)
+      .format(codecName)
+      .pipe();
+  }
+
   public async metadata(file: Readable): Promise<FfprobeData> {
     return await new Promise((resolve, reject) => {
-      ffmpeg().input(file).ffprobe((err, data) => {
-        if (err) {
-          reject(err);
-        }
+      ffmpeg()
+        .input(file)
+        .ffprobe((err, data) => {
+          if (err) {
+            reject(err);
+          }
 
-        resolve(data);
-      });
+          resolve(data);
+        });
     });
   }
 
-  public async thumbnail(file: Readable, options: { second: number }): Promise<Stream> {
+  public async getCodecName(file: Readable): Promise<string | undefined> {
+    const metadata = await this.metadata(file);
+    const videoStream = metadata.streams.find(
+      (stream) => stream.codec_type === 'video',
+    );
+
+    return videoStream?.codec_name;
+  }
+
+  public async thumbnail(
+    file: Readable,
+    options: { second: number },
+  ): Promise<Stream> {
     const tempFileName = `${await createTempFilename()}.png`;
 
     return await new Promise((resolve, reject) => {
       ffmpeg()
-        .input(file).outputOption('-frames:v 1')
+        .input(file)
+        .outputOption('-frames:v 1')
         .output(tempFileName)
         .seek(options.second)
         .on('error', (err) => {
