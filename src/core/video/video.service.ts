@@ -15,6 +15,9 @@ type VideoResizeOptions = {
   codecName: string;
 } & ResizeOptions;
 
+const VIDEO_TYPE = 'video';
+const THUMBNAIL_EXTENSION = 'png';
+
 export class VideoService {
   constructor() {
     ffmpeg.setFfmpegPath(ffmpegBinary.path);
@@ -61,7 +64,7 @@ export class VideoService {
   public async getCodecName(file: Readable): Promise<string | undefined> {
     const metadata = await this.metadata(file);
     const videoStream = metadata.streams.find(
-      (stream) => stream.codec_type === 'video',
+      (stream) => stream.codec_type === VIDEO_TYPE,
     );
 
     return videoStream?.codec_name;
@@ -71,7 +74,7 @@ export class VideoService {
     file: Readable,
     options: { second: number },
   ): Promise<Stream> {
-    const tempFileName = `${await createTempFilename()}.png`;
+    const tempFileName = `${await createTempFilename()}.${THUMBNAIL_EXTENSION}`;
 
     return await new Promise((resolve, reject) => {
       ffmpeg()
