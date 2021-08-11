@@ -19,7 +19,7 @@ describe('VideoService', () => {
       const expectedDimensions = 100;
       const video = await getTestVideo();
 
-      const resizedVideo = videoService.resize(video, {
+      const resizedVideo = videoService.resizeStream(video, {
         height: expectedDimensions,
         width: expectedDimensions,
         codecName: 'h264',
