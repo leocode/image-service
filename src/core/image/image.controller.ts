@@ -5,7 +5,7 @@ import { createCropHandler } from './resize/crop.handler';
 import { createThumbnailHandler } from './resize/thumbnail.handler';
 
 export const imageController = async (fastify: FastifyInstance) => {
-  const schema = {
+  const baseSchema = {
     tags: ['image'],
     consumes: ['multipart/form-data'],
     body: {
@@ -17,8 +17,8 @@ export const imageController = async (fastify: FastifyInstance) => {
     },
   };
 
-  createMetadataHandler('/metadata', fastify, { schema });
-  createThumbnailHandler('/thumbnail', fastify, { schema });
-  createCropHandler('/:adapter/crop', fastify, { schema });
-  createResizeHandler('/:adapter/resize', fastify, { schema });
+  createMetadataHandler('/metadata', fastify, { schema: baseSchema });
+  createThumbnailHandler('/thumbnail', fastify, { schema: baseSchema });
+  createCropHandler('/:adapter/crop', fastify, { schema: baseSchema });
+  createResizeHandler('/:adapter/resize', fastify, { schema: baseSchema });
 };
