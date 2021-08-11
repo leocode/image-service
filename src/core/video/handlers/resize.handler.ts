@@ -45,7 +45,7 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
           codecName: resizeOptions.codecName,
         });
 
-        return await adapter.handleFile(result);
+        return adapter.handleFile(result);
       } else {
         const [file] = await request.saveRequestFiles();
 
@@ -54,7 +54,7 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
           width: resizeOptions.width,
         });
 
-        return await adapter.handleFile(result);
+        return adapter.handleFile(result);
       }
     },
   );
