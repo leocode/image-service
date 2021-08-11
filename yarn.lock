@@ -612,10 +612,10 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
-"@leocode/eslint-config@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@leocode/eslint-config/-/eslint-config-1.1.0.tgz#e5f90a0a8c35d5c9233b1b6c6cef4c4858a01913"
-  integrity sha512-b02Vr8AEd3PgP4PIs+19eeFqjn03x2EZD8BE6dzWWSPeqD1RJ48TYgFYpwjOImn2pOFprK90Gr0P9J1oTTlP4w==
+"@leocode/eslint-config@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@leocode/eslint-config/-/eslint-config-1.2.0.tgz#266928ec902c05c7459b14879029a0bf22d44b85"
+  integrity sha512-xDNnOOwRtqzICHM5P1WALPbtW2I4mZ5pgK6H15VJ37csEYCsy5pgMl/QNSqrqjsHT/GV0L0cZbgN2/xASZ4SSQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
