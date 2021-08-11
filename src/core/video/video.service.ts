@@ -1,6 +1,7 @@
 import type { ResizeOptions } from 'sharp';
 import type { Readable, Stream } from 'stream';
 import ffmpegBinary from '@ffmpeg-installer/ffmpeg';
+import ffprobeBinary from '@ffprobe-installer/ffprobe';
 import type { FfprobeData } from 'fluent-ffmpeg';
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
@@ -11,11 +12,12 @@ const createTempFilename = util.promisify(tmp.tmpName);
 
 type VideoResizeOptions = {
   codecName: string;
-} & ResizeOptions
+} & ResizeOptions;
 
 export class VideoService {
   constructor() {
     ffmpeg.setFfmpegPath(ffmpegBinary.path);
+    ffmpeg.setFfprobePath(ffprobeBinary.path);
   }
 
   public resize(file: Readable, options: VideoResizeOptions): Stream {
@@ -38,12 +40,16 @@ export class VideoService {
     });
   }
 
-  public async thumbnail(file: Readable, options: { second: number }): Promise<Stream> {
+  public async thumbnail(
+    file: Readable,
+    options: { second: number },
+  ): Promise<Stream> {
     const tempFileName = `${await createTempFilename()}.png`;
 
     return await new Promise((resolve, reject) => {
       ffmpeg()
-        .input(file).outputOption('-frames:v 1')
+        .input(file)
+        .outputOption('-frames:v 1')
         .output(tempFileName)
         .seek(options.second)
         .on('error', (err) => {
