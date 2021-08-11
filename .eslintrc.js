@@ -1,3 +1,3 @@
 module.exports = {
-  extends: "@leocode/eslint-config/node",
+    extends: '@leocode/eslint-config/node',
 };
