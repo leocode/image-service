@@ -1,6 +1,7 @@
 import type { ResizeOptions } from 'sharp';
 import type { Readable, Stream } from 'stream';
 import ffmpegBinary from '@ffmpeg-installer/ffmpeg';
+import ffprobeBinary from '@ffprobe-installer/ffprobe';
 import type { FfprobeData } from 'fluent-ffmpeg';
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
@@ -21,6 +22,7 @@ const THUMBNAIL_EXTENSION = 'png';
 export class VideoService {
   constructor() {
     ffmpeg.setFfmpegPath(ffmpegBinary.path);
+    ffmpeg.setFfprobePath(ffprobeBinary.path);
   }
 
   public resizeStream(file: Readable, options: VideoResizeOptions): Stream {
