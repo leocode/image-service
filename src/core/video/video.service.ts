@@ -12,6 +12,7 @@ import exiftool from '@mcmics/dist-exiftool';
 import Boom from 'boom';
 import { ImageErrors } from '../image/image.errors';
 import type { VideoMetadata } from './video.types';
+import { Orientation } from '../common/common.types';
 
 const createTempFilename = util.promisify(tmp.tmpName);
 
@@ -51,7 +52,8 @@ export class VideoService {
           width,
           height,
           duration: metadata.Duration,
-          orientation: height > width ? 'portrait' : 'landscape',
+          orientation:
+            height > width ? Orientation.Portrait : Orientation.Landscape,
           mimeType: metadata.MIMEType,
         });
       };

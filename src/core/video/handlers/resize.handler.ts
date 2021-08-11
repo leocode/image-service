@@ -4,6 +4,8 @@ import { getAdapter } from '../../../adapters/adapter.utils';
 import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
 import type { FastifySchema } from 'fastify/types/schema';
+import Boom from 'boom';
+import { Errors } from '../../common/common.errors';
 
 type ResizeQuery = { width: number; height: number; codecName: string };
 
@@ -36,6 +38,11 @@ export const createResizeHandler = (
     },
     async (request, reply) => {
       const fileToProcess = await request.file();
+
+      if (!fileToProcess) {
+        throw Boom.badRequest(Errors.FileIsRequired);
+      }
+
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
       const resizeOptions = request.query;

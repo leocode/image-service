@@ -7,6 +7,7 @@ import {
 } from '../../../test/test.utils';
 import * as fs from 'fs';
 import jimp from 'jimp';
+import { Orientation } from '../common/common.types';
 
 describe('VideoService', () => {
   let videoService: VideoService;
@@ -41,7 +42,7 @@ describe('VideoService', () => {
 
       expect(metadata).toMatchObject({
         duration: '3.34 s',
-        orientation: 'landscape',
+        orientation: Orientation.Landscape,
         width: 1920,
         height: 1080,
         mimeType: 'video/mp4',

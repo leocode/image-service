@@ -1,9 +1,14 @@
 import { ImageService } from './image.service';
-import { getTestImage, streamToBuffer } from '../../../test/test.utils';
+import {
+  getTestImage,
+  JPEG_MIME_TYPE,
+  streamToBuffer,
+} from '../../../test/test.utils';
 import type { Region } from 'sharp';
 import sharp from 'sharp';
 
 import getColors from 'get-image-colors';
+import { Orientation } from '../common/common.types';
 
 describe('ImageService', () => {
   let imageService: ImageService;
@@ -67,7 +72,7 @@ describe('ImageService', () => {
 
       const colors = await getColors(
         await streamToBuffer(croppedImage),
-        'image/jpeg',
+        JPEG_MIME_TYPE,
       );
       expect(colors.length).toEqual(1);
       expect(colors[0].hex()).toEqual(expectedColor);
@@ -81,10 +86,10 @@ describe('ImageService', () => {
       const metadata = await imageService.metadata(image);
 
       expect(metadata).toMatchObject({
-        orientation: 'landscape',
+        orientation: Orientation.Landscape,
         width: 200,
         height: 200,
-        mimeType: 'image/jpeg',
+        mimeType: JPEG_MIME_TYPE,
       });
     });
   });
