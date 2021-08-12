@@ -4,6 +4,8 @@ import { getAdapter } from '../../../adapters/adapter.utils';
 import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
 import type { Region } from 'sharp';
+import Boom from 'boom';
+import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
 
 const cropQuerySchema = {
@@ -30,6 +32,11 @@ export const createCropHandler = (path: string, fastify: FastifyInstance) => {
     },
     async (request, reply) => {
       const fileToProcess = await request.file();
+
+      if (!fileToProcess) {
+        throw Boom.badRequest(Errors.FileIsRequired);
+      }
+
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
       const { top, left, height, width } = request.query;

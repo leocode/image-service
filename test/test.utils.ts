@@ -61,3 +61,5 @@ export const streamToBuffer = (stream: Stream): Promise<Buffer> => {
     });
   });
 };
+
+export const JPEG_MIME_TYPE = 'image/jpeg';

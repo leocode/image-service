@@ -7,6 +7,7 @@ import exiftool from '@mcmics/dist-exiftool';
 import type { ImageMetadata } from './image.types';
 import Boom from 'boom';
 import { ImageErrors } from './image.errors';
+import { Orientation } from '../common/common.types';
 
 export class ImageService {
   public resize(file: Readable, options: ResizeOptions): Stream {
@@ -35,7 +36,8 @@ export class ImageService {
           width,
           height,
           mimeType: metadata.MIMEType,
-          orientation: height > width ? 'portrait' : 'landscape',
+          orientation:
+            height > width ? Orientation.Portrait : Orientation.Landscape,
         });
       };
 

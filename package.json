@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node dist/core/index.js",
+    "start": "node dist/src/core/index.js",
     "lint": "eslint src/**/*.ts",
     "test": "jest",
     "start:dev": "ts-node-dev src/core/index.ts -P tsconfig.json"
@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@leocode/eslint-config": "1.1.0",
+    "@semantic-release/git": "9.0.0",
     "@types/boom": "7.3.1",
     "@types/busboy": "0.2.4",
     "@types/fluent-ffmpeg": "2.1.18",
@@ -38,6 +39,7 @@
     "get-image-colors": "4.0.0",
     "jest": "27.0.6",
     "jimp": "0.16.1",
+    "semantic-release": "17.4.4",
     "ts-jest": "27.0.4",
     "ts-node": "10.1.0",
     "ts-node-dev": "1.1.8",

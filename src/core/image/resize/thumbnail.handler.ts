@@ -1,5 +1,7 @@
 import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
+import Boom from 'boom';
+import { Errors } from '../../common/common.errors';
 import { getAdapter } from '../../../adapters/adapter.utils';
 import type { AdapterParams } from '../../common/schemas';
 import { adapterParamsSchema } from '../../common/schemas';
@@ -32,6 +34,11 @@ export const createThumbnailHandler = (
     },
     async (request, reply) => {
       const fileToProcess = await request.file();
+
+      if (!fileToProcess) {
+        throw Boom.badRequest(Errors.FileIsRequired);
+      }
+
       const { height, width } = request.query;
       const imageService = new ImageService();
       const adapterName = request.params.adapter;
