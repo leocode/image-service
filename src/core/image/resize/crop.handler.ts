@@ -4,6 +4,7 @@ import { getAdapter } from '../../../adapters/adapter.utils';
 import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
 import type { Region } from 'sharp';
+import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
@@ -19,7 +20,11 @@ const cropQuerySchema = {
   },
 };
 
-export const createCropHandler = (path: string, fastify: FastifyInstance) => {
+export const createCropHandler = (
+  path: string,
+  fastify: FastifyInstance,
+  options: { baseSchema: FastifySchema },
+) => {
   fastify.post<{
     Params: AdapterParams;
     Querystring: Region;
@@ -27,6 +32,7 @@ export const createCropHandler = (path: string, fastify: FastifyInstance) => {
     path,
     {
       schema: {
+        ...options.baseSchema,
         params: adapterParamsSchema,
         querystring: cropQuerySchema,
       },

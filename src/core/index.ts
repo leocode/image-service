@@ -3,11 +3,18 @@ import config from '../config';
 import { imageController } from './image/image.controller';
 import { videoController } from './video/video.controller';
 import fastifyMultipart from 'fastify-multipart';
+import { setupSwagger } from '../docs/setup-swagger';
 
-const server = fastify({ logger: true });
+function ajvPlugin(ajv: any) {
+  ajv.addFormat('binary', { type: 'string', validate: () => true });
+
+  return ajv;
+}
+const server = fastify({ logger: true, ajv: { plugins: [ajvPlugin] } });
 
 server.register(require('fastify-boom'));
 server.register(fastifyMultipart);
+setupSwagger(server);
 
 server.register(imageController, { prefix: '/images' });
 server.register(videoController, { prefix: '/videos' });

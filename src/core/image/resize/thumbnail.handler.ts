@@ -1,5 +1,6 @@
 import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
+import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { getAdapter } from '../../../adapters/adapter.utils';
@@ -21,6 +22,7 @@ type ThumbnailQuery = { width: number; height: number };
 export const createThumbnailHandler = (
   path: string,
   fastify: FastifyInstance,
+  options: { baseSchema: FastifySchema },
 ) => {
   fastify.post<{
     Params: AdapterParams;
@@ -29,6 +31,7 @@ export const createThumbnailHandler = (
     path,
     {
       schema: {
+        ...options.baseSchema,
         params: adapterParamsSchema,
         querystring: thumbnailQuerySchema,
       },

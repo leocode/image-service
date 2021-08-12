@@ -1,5 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
+import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
@@ -15,12 +16,13 @@ const thumbnailQuerySchema = {
   },
 };
 
-type ThumbnailQuery = { second: number; };
+type ThumbnailQuery = { second: number };
 const DEFAULT_THUMBNAIL_SECOND = 1;
 
 export const createThumbnailHandler = (
   path: string,
   fastify: FastifyInstance,
+  options: { baseSchema: FastifySchema },
 ) => {
   fastify.post<{
     Params: AdapterParams;
@@ -29,6 +31,7 @@ export const createThumbnailHandler = (
     path,
     {
       schema: {
+        ...options.baseSchema,
         params: adapterParamsSchema,
         querystring: thumbnailQuerySchema,
       },
