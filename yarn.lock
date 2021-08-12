@@ -957,7 +957,7 @@
     "@babel/runtime" "^7.7.2"
     regenerator-runtime "^0.13.3"
 
-"@leocode/eslint-config@^1.2.0":
+"@leocode/eslint-config@1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@leocode/eslint-config/-/eslint-config-1.2.0.tgz#266928ec902c05c7459b14879029a0bf22d44b85"
   integrity sha512-xDNnOOwRtqzICHM5P1WALPbtW2I4mZ5pgK6H15VJ37csEYCsy5pgMl/QNSqrqjsHT/GV0L0cZbgN2/xASZ4SSQ==
