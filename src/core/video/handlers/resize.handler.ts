@@ -3,10 +3,11 @@ import { adapterParamsSchema } from '../../common/schemas';
 import { getAdapter } from '../../../adapters/adapter.utils';
 import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
+import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 
-type ResizeQuery = { width: number; height: number, codecName: string };
+type ResizeQuery = { width: number; height: number; codecName: string };
 
 const resizeQuerySchema = {
   type: 'object',
@@ -18,7 +19,11 @@ const resizeQuerySchema = {
   required: ['height', 'width', 'codecName'],
 };
 
-export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
+export const createResizeHandler = (
+  path: string,
+  fastify: FastifyInstance,
+  options: { schema: FastifySchema },
+) => {
   fastify.post<{
     Params: AdapterParams;
     Querystring: ResizeQuery;
@@ -28,6 +33,7 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
       schema: {
         params: adapterParamsSchema,
         querystring: resizeQuerySchema,
+        ...options.schema,
       },
     },
     async (request, reply) => {
