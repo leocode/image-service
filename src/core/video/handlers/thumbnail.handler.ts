@@ -1,5 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
+import Boom from 'boom';
+import { Errors } from '../../common/common.errors';
 
 const thumbnailQuerySchema = {
   type: 'object',
@@ -26,6 +28,11 @@ export const createThumbnailHandler = (
     },
     async (request) => {
       const fileToProcess = await request.file();
+
+      if (!fileToProcess) {
+        throw Boom.badRequest(Errors.FileIsRequired);
+      }
+
       const videoService = new VideoService();
 
       return await videoService.thumbnail(fileToProcess.file, {
