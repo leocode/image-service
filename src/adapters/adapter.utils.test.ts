@@ -5,12 +5,12 @@ import { AdapterErrors } from './adapter.errors';
 
 describe('AdapterUtils', () => {
   describe('getAdapter', () => {
-    it('should throw error', async () => {
+    it('should throw error', () => {
       expect(() => getAdapter('NonexistentAdapter')).toThrowError(AdapterErrors.AdapterNotFound);
     });
 
-    it('should return RequestReplyAdapter', async () => {
-      const adapter = await getAdapter(AdapterEnum.requestReply);
+    it('should return RequestReplyAdapter', () => {
+      const adapter = getAdapter(AdapterEnum.requestReply);
 
       expect(adapter).toStrictEqual(requestReplyAdapter);
     });
