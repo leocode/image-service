@@ -3,6 +3,9 @@ import { adapterParamsSchema } from '../../common/schemas';
 import { getAdapter } from '../../../adapters/adapter.utils';
 import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
+import type { FastifySchema } from 'fastify/types/schema';
+import Boom from 'boom';
+import { Errors } from '../../common/common.errors';
 
 type ResizeQuery = { width: number; height: number; codecName: string };
 
@@ -16,7 +19,11 @@ const resizeQuerySchema = {
   required: ['height', 'width'],
 };
 
-export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
+export const createResizeHandler = (
+  path: string,
+  fastify: FastifyInstance,
+  options: { baseSchema: FastifySchema },
+) => {
   fastify.post<{
     Params: AdapterParams;
     Querystring: ResizeQuery;
@@ -24,11 +31,18 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
     path,
     {
       schema: {
+        ...options.baseSchema,
         params: adapterParamsSchema,
         querystring: resizeQuerySchema,
       },
     },
     async (request, reply) => {
+      const fileToProcess = await request.file();
+
+      if (!fileToProcess) {
+        throw Boom.badRequest(Errors.FileIsRequired);
+      }
+
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
       const resizeOptions = request.query;
@@ -48,6 +62,10 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
         return adapter.handleFile(result);
       } else {
         const [file] = await request.saveRequestFiles();
+
+        if (!file) {
+          throw Boom.badRequest(Errors.FileIsRequired);
+        }
 
         const result = await videoService.resizeFile(file.filepath, {
           height: resizeOptions.height,
