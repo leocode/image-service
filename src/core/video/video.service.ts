@@ -2,6 +2,7 @@ import type { ResizeOptions } from 'sharp';
 import type { Readable, Stream } from 'stream';
 import ffmpegBinary from '@ffmpeg-installer/ffmpeg';
 import ffprobeBinary from '@ffprobe-installer/ffprobe';
+import type { FfprobeData } from 'fluent-ffmpeg';
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import tmp from 'tmp';
@@ -10,7 +11,6 @@ import type { ExecFileException } from 'child_process';
 import { execFile } from 'child_process';
 import exiftool from '@mcmics/dist-exiftool';
 import Boom from 'boom';
-import { ImageErrors } from '../image/image.errors';
 import type { VideoMetadata } from './video.types';
 import { Orientation } from '../common/common.types';
 import { VideoErrors } from './video.errors';
@@ -55,17 +55,18 @@ export class VideoService {
   }
 
   public async metadata(file: Readable): Promise<VideoMetadata> {
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       const extractMetadataFromExifTool: (
         error: ExecFileException | null,
         stdout: string,
         stderr: string
       ) => void = (error, stdout, stderr) => {
-          if (error) {
-            reject(error);
-          }const [metadata] = JSON.parse(stdout);
+        if (error) {
+          reject(error);
+        }
+        const [metadata] = JSON.parse(stdout);
 
-          const width = metadata.ImageWidth;
+        const width = metadata.ImageWidth;
         const height = metadata.ImageHeight;
         resolve({
           width,
@@ -76,7 +77,7 @@ export class VideoService {
           mimeType: metadata.MIMEType,
         });
       };
-        const exifToolProcess = execFile(
+      const exifToolProcess = execFile(
         exiftool,
         ['-json', '-'],
         extractMetadataFromExifTool,
@@ -84,7 +85,7 @@ export class VideoService {
 
       if (!exifToolProcess.stdin) {
         throw Boom.badImplementation(
-          ImageErrors.CannotRunImageProcessingService,
+          VideoErrors.CannotRunVideoProcessingService,
         );
       }
 
@@ -92,8 +93,22 @@ export class VideoService {
     });
   }
 
+  public async getFfprobeData(file: Readable): Promise<FfprobeData> {
+    return await new Promise((resolve, reject) => {
+      ffmpeg()
+        .input(file)
+        .ffprobe((err, data) => {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(data);
+        });
+    });
+  }
+
   public async getCodecName(file: Readable): Promise<string | undefined> {
-    const metadata = await this.metadata(file);
+    const metadata = await this.getFfprobeData(file);
     const videoStream = metadata.streams.find(
       (stream) => stream.codec_type === VIDEO_TYPE,
     );

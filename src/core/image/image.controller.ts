@@ -8,13 +8,6 @@ export const imageController = async (fastify: FastifyInstance) => {
   const baseSchema = {
     tags: ['image'],
     consumes: ['multipart/form-data'],
-    body: {
-      type: 'object',
-      properties: {
-        file: { type: 'string', format: 'binary' },
-      },
-      required: ['file'],
-    },
   };
 
   createMetadataHandler('/metadata', fastify, { baseSchema });

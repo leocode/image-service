@@ -37,12 +37,6 @@ export const createResizeHandler = (
       },
     },
     async (request, reply) => {
-      const fileToProcess = await request.file();
-
-      if (!fileToProcess) {
-        throw Boom.badRequest(Errors.FileIsRequired);
-      }
-
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
       const resizeOptions = request.query;
