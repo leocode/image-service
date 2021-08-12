@@ -17,7 +17,7 @@ type ThumbnailQuery = { width: number; height: number };
 export const createThumbnailHandler = (
   path: string,
   fastify: FastifyInstance,
-  options: { schema: FastifySchema },
+  options: { baseSchema: FastifySchema },
 ) => {
   fastify.post<{
     Querystring: ThumbnailQuery;
@@ -25,8 +25,8 @@ export const createThumbnailHandler = (
     path,
     {
       schema: {
+        ...options.baseSchema,
         querystring: thumbnailQuerySchema,
-        ...options.schema,
       },
     },
     async (request) => {
@@ -39,7 +39,7 @@ export const createThumbnailHandler = (
       const { height, width } = request.query;
       const imageService = new ImageService();
 
-      return await imageService.resize(fileToProcess.file, {
+      return imageService.resize(fileToProcess.file, {
         height,
         width,
       });

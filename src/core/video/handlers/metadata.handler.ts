@@ -7,9 +7,9 @@ import { Errors } from '../../common/common.errors';
 export const createMetadataHandler = (
   path: string,
   fastify: FastifyInstance,
-  options: { schema: FastifySchema },
+  options: { baseSchema: FastifySchema },
 ) => {
-  fastify.post(path, { ...options }, async (request) => {
+  fastify.post(path, { schema: options.baseSchema }, async (request) => {
     const fileToProcess = await request.file();
 
     if (!fileToProcess) {

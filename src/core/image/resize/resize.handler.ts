@@ -20,7 +20,7 @@ const resizeQuerySchema = {
 export const createResizeHandler = (
   path: string,
   fastify: FastifyInstance,
-  options: { schema: FastifySchema },
+  options: { baseSchema: FastifySchema },
 ) => {
   fastify.post<{
     Params: AdapterParams;
@@ -29,9 +29,9 @@ export const createResizeHandler = (
     path,
     {
       schema: {
+        ...options.baseSchema,
         params: adapterParamsSchema,
         querystring: resizeQuerySchema,
-        ...options.schema,
       },
     },
     async (request) => {

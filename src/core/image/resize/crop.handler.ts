@@ -21,7 +21,7 @@ const cropQuerySchema = {
 export const createCropHandler = (
   path: string,
   fastify: FastifyInstance,
-  options: { schema: FastifySchema },
+  options: { baseSchema: FastifySchema },
 ) => {
   fastify.post<{
     Params: AdapterParams;
@@ -30,9 +30,9 @@ export const createCropHandler = (
     path,
     {
       schema: {
+        ...options.baseSchema,
         params: adapterParamsSchema,
         querystring: cropQuerySchema,
-        ...options.schema,
       },
     },
     async (request) => {
