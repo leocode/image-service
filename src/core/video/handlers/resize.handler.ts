@@ -6,6 +6,7 @@ import { VideoService } from '../video.service';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
+import { FileTypeEnum } from '../../../adapters/adapter.types';
 
 type ResizeQuery = { width: number; height: number, codecName: string };
 
@@ -49,7 +50,7 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
         codecName: resizeOptions.codecName,
       });
 
-      const adapterResult = await adapter.handleFile({ file, fileType: 'video', requestBody: request.body });
+      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.video, requestBody: request.body });
       return await handleResponse(adapterResult, reply);
     },
   );

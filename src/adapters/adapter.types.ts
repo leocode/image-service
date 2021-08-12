@@ -1,5 +1,12 @@
 import type { Stream } from 'stream';
 
+export const FileTypeEnum = {
+  image: 'image',
+  video: 'video',
+} as const;
+
+export type FileType = typeof FileTypeEnum[keyof typeof FileTypeEnum]
+
 export const AdapterEnum = {
   requestReply: 'request-reply',
 } as const;
@@ -10,7 +17,7 @@ export type AdapterType = typeof AdapterEnum[keyof typeof AdapterEnum]
 
 export type BasicAdapterCommand<T> = {
   file: Stream,
-  fileType: 'image' | 'video', // Info if processed media file is image or video
+  fileType: FileType,
   requestBody?: T, // Request body - important it the future to process extra parameters (e.g in S3 integration)
 };
 

@@ -6,6 +6,7 @@ import type { FastifyInstance } from 'fastify';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
+import { FileTypeEnum } from '../../../adapters/adapter.types';
 
 type ResizeQuery = { width: number; height: number };
 
@@ -46,7 +47,7 @@ export const createResizeHandler = (path: string, fastify: FastifyInstance) => {
         width: resizeOptions.width,
       });
 
-      const adapterResult = await adapter.handleFile({ file, fileType: 'image', requestBody: request.body });
+      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.image, requestBody: request.body });
       return await handleResponse(adapterResult, reply);
     },
   );

@@ -6,6 +6,7 @@ import { handleResponse } from '../../common/response.handler';
 import { getAdapter } from '../../../adapters/adapter.utils';
 import type { AdapterParams } from '../../common/schemas';
 import { adapterParamsSchema } from '../../common/schemas';
+import { FileTypeEnum } from '../../../adapters/adapter.types';
 
 const thumbnailQuerySchema = {
   type: 'object',
@@ -46,7 +47,7 @@ export const createThumbnailHandler = (
       const file = await videoService.thumbnail(fileToProcess.file, {
         second: request.query.second ?? DEFAULT_THUMBNAIL_SECOND,
       });
-      const adapterResult = await adapter.handleFile({ file, fileType: 'video', requestBody: request.body });
+      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.video, requestBody: request.body });
       return await handleResponse(adapterResult, reply);
     },
   );

@@ -6,6 +6,7 @@ import { getAdapter } from '../../../adapters/adapter.utils';
 import type { AdapterParams } from '../../common/schemas';
 import { adapterParamsSchema } from '../../common/schemas';
 import { handleResponse } from '../../common/response.handler';
+import { FileTypeEnum } from '../../../adapters/adapter.types';
 
 const thumbnailQuerySchema = {
   type: 'object',
@@ -49,7 +50,7 @@ export const createThumbnailHandler = (
         width,
       });
 
-      const adapterResult = await adapter.handleFile({ file, fileType: 'image', requestBody: request.body });
+      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.image, requestBody: request.body });
       return await handleResponse(adapterResult, reply);
     },
   );
