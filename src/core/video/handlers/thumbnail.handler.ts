@@ -17,7 +17,7 @@ const DEFAULT_THUMBNAIL_SECOND = 1;
 export const createThumbnailHandler = (
   path: string,
   fastify: FastifyInstance,
-  options: { schema: FastifySchema },
+  options: { baseSchema: FastifySchema },
 ) => {
   fastify.post<{
     Querystring: ThumbnailQuery;
@@ -25,8 +25,8 @@ export const createThumbnailHandler = (
     path,
     {
       schema: {
+        ...options.baseSchema,
         querystring: thumbnailQuerySchema,
-        ...options.schema,
       },
     },
     async (request) => {
