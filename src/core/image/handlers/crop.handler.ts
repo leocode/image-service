@@ -3,35 +3,36 @@ import { adapterParamsSchema } from '../../common/schemas';
 import { getAdapter } from '../../../adapters/adapter.utils';
 import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
+import type { Region } from 'sharp';
 import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 
-type ResizeQuery = { width: number; height: number };
-
-const resizeQuerySchema = {
+const cropQuerySchema = {
   type: 'object',
   properties: {
-    height: { type: 'number' },
+    left: { type: 'number' },
+    top: { type: 'number' },
     width: { type: 'number' },
+    height: { type: 'number' },
   },
 };
 
-export const createResizeHandler = (
+export const createCropHandler = (
   path: string,
   fastify: FastifyInstance,
   options: { baseSchema: FastifySchema },
 ) => {
   fastify.post<{
     Params: AdapterParams;
-    Querystring: ResizeQuery;
+    Querystring: Region;
   }>(
     path,
     {
       schema: {
         ...options.baseSchema,
         params: adapterParamsSchema,
-        querystring: resizeQuerySchema,
+        querystring: cropQuerySchema,
       },
     },
     async (request) => {
@@ -43,15 +44,17 @@ export const createResizeHandler = (
 
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
-      const resizeOptions = request.query;
+      const { top, left, height, width } = request.query;
       const imageService = new ImageService();
 
-      const file = await imageService.resize(fileToProcess.file, {
-        height: resizeOptions.height,
-        width: resizeOptions.width,
+      const file = await imageService.crop(fileToProcess.file, {
+        top,
+        left,
+        height,
+        width,
       });
 
-      return adapter.handleFile(file);
+      return await adapter.handleFile(file);
     },
   );
 };

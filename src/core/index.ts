@@ -16,8 +16,8 @@ server.register(require('fastify-boom'));
 server.register(fastifyMultipart);
 setupSwagger(server);
 
-server.register(imageController, { prefix: '/images' });
-server.register(videoController, { prefix: '/videos' });
+server.register(imageController, { prefix: '/image' });
+server.register(videoController, { prefix: '/video' });
 
 const start = async () => {
   try {
