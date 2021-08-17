@@ -11,7 +11,7 @@ export const imageController = async (fastify: FastifyInstance) => {
   };
 
   createMetadataHandler('/metadata', fastify, { baseSchema });
-  createThumbnailHandler('/thumbnail', fastify, { baseSchema });
+  createThumbnailHandler('/:adapter/thumbnail', fastify, { baseSchema });
   createCropHandler('/:adapter/crop', fastify, { baseSchema });
   createResizeHandler('/:adapter/resize', fastify, { baseSchema });
 };
