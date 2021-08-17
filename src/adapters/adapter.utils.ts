@@ -1,6 +1,6 @@
 import Boom from 'boom';
 import { AdapterErrors } from './adapter.errors';
-import type { AdapterEnum} from './adapter.types';
+import type { AdapterEnum } from './adapter.types';
 import { AdapterMap } from './adapter.types';
 
 export const getAdapter = (adapterName: string) => {

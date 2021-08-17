@@ -10,7 +10,7 @@ describe('AdapterUtils', () => {
     });
 
     it('should return RequestReplyAdapter', () => {
-      const adapter = getAdapter(AdapterEnum.requestReply);
+      const adapter = getAdapter(AdapterEnum.RequestReply);
 
       expect(adapter).toStrictEqual(requestReplyAdapter);
     });
