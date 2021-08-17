@@ -1,17 +1,20 @@
 import type { Stream } from 'stream';
+import { requestReplyAdapter } from './requestReply.adapter';
 
 export const enum FileTypeEnum {
   image = 'image',
   video = 'video',
 }
 
-export const AdapterEnum = {
-  requestReply: 'request-reply',
+export enum AdapterEnum {
+  'RequestReply' = 'request-reply',
+}
+
+export const AdapterMap = {
+  [AdapterEnum.RequestReply]: requestReplyAdapter,
 } as const;
 
 export const ADAPTERS = Object.values(AdapterEnum);
-
-export type AdapterType = typeof AdapterEnum[keyof typeof AdapterEnum]
 
 export type BasicAdapterCommand<T> = {
   file: Stream,
