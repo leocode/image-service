@@ -7,13 +7,6 @@ export const videoController = async (fastify: FastifyInstance) => {
   const baseSchema = {
     tags: ['video'],
     consumes: ['multipart/form-data'],
-    body: {
-      type: 'object',
-      properties: {
-        file: { type: 'string', format: 'binary' },
-      },
-      required: ['file'],
-    },
   };
 
   createMetadataHandler('/metadata', fastify, { baseSchema });
