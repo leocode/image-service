@@ -1,35 +1,17 @@
 import type { FastifyInstance } from 'fastify';
-import Boom from 'boom';
-import { adapterParamsSchema, fileBodySchema } from '../common/schemas';
+import { createMetadataHandler } from './handlers/metadata.handler';
+import { createResizeHandler } from './handlers/resize.handler';
+import { createThumbnailHandler } from './handlers/thumbnail.handler';
 
 export const videoController = async (fastify: FastifyInstance) => {
-  fastify.post('/metadata', {}, () => {
-    throw Boom.notImplemented();
-  });
+  const baseSchema = {
+    tags: ['video'],
+    consumes: ['multipart/form-data'],
+  };
 
-  fastify.post(
-    '/:adapter/resize',
-    {
-      schema: {
-        params: adapterParamsSchema,
-        body: fileBodySchema,
-      },
-    },
-    () => {
-      throw Boom.notImplemented();
-    },
-  );
+  createMetadataHandler('/metadata', fastify, { baseSchema });
 
-  fastify.post(
-    '/:adapter/thumbnail',
-    {
-      schema: {
-        params: adapterParamsSchema,
-        body: fileBodySchema,
-      },
-    },
-    () => {
-      throw Boom.notImplemented();
-    },
-  );
+  createResizeHandler('/:adapter/resize', fastify, { baseSchema });
+
+  createThumbnailHandler('/:adapter/thumbnail', fastify, { baseSchema });
 };

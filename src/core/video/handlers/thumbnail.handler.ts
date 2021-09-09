@@ -1,23 +1,23 @@
-import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
+import { VideoService } from '../video.service';
 import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
+import { handleResponse } from '../../common/response.handler';
 import { getAdapter } from '../../../adapters/adapter.utils';
 import type { AdapterParams } from '../../common/schemas';
 import { adapterParamsSchema } from '../../common/schemas';
-import { handleResponse } from '../../common/response.handler';
 import { FileTypeEnum } from '../../../adapters/adapter.types';
 
 const thumbnailQuerySchema = {
   type: 'object',
   properties: {
-    width: { type: 'number' },
-    height: { type: 'number' },
+    second: { type: 'number' },
   },
 };
 
-type ThumbnailQuery = { width: number; height: number };
+type ThumbnailQuery = { second: number };
+const DEFAULT_THUMBNAIL_SECOND = 1;
 
 export const createThumbnailHandler = (
   path: string,
@@ -43,17 +43,14 @@ export const createThumbnailHandler = (
         throw Boom.badRequest(Errors.FileIsRequired);
       }
 
-      const { height, width } = request.query;
-      const imageService = new ImageService();
+      const videoService = new VideoService();
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
 
-      const file = await imageService.resize(fileToProcess.file, {
-        height,
-        width,
+      const file = await videoService.thumbnail(fileToProcess.file, {
+        second: request.query.second ?? DEFAULT_THUMBNAIL_SECOND,
       });
-
-      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.image, requestBody: request.body });
+      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.video, requestBody: request.body });
       return await handleResponse(adapterResult, reply);
     },
   );

@@ -1,6 +1,7 @@
-import type { Adapter } from './adapter.types';
+import type { AdapterInterface } from './adapter.interface';
 
-// Dummy implementation. TODO: https://github.com/leocode/image-service/issues/4
-export const requestReplyAdapter: Adapter = {
-  handleFile: (fileStream) => fileStream,
+export const requestReplyAdapter: AdapterInterface = {
+  handleFile: async (command) => {
+    return { file: command.file };
+  },
 };

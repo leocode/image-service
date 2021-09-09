@@ -1,5 +1,5 @@
-import { ImageService } from '../image.service';
 import type { FastifyInstance } from 'fastify';
+import { VideoService } from '../video.service';
 import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
@@ -16,8 +16,8 @@ export const createMetadataHandler = (
       throw Boom.badRequest(Errors.FileIsRequired);
     }
 
-    const imageService = new ImageService();
+    const videoService = new VideoService();
 
-    return await imageService.metadata(fileToProcess.file);
+    return await videoService.metadata(fileToProcess.file);
   });
 };
