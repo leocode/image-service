@@ -93,7 +93,7 @@ export class VideoService {
     });
   }
 
-  public async getFfprobeData(file: Readable): Promise<FfprobeData> {
+  private async getFfprobeData(file: Readable): Promise<FfprobeData> {
     return await new Promise((resolve, reject) => {
       ffmpeg()
         .input(file)
@@ -107,7 +107,7 @@ export class VideoService {
     });
   }
 
-  public async getCodecName(file: Readable): Promise<string | undefined> {
+  private async getCodecName(file: Readable): Promise<string | undefined> {
     const metadata = await this.getFfprobeData(file);
     const videoStream = metadata.streams.find(
       (stream) => stream.codec_type === VIDEO_TYPE,
