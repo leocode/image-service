@@ -14,6 +14,8 @@ import Boom from 'boom';
 import type { VideoMetadata } from './video.types';
 import { Orientation } from '../common/common.types';
 import { VideoErrors } from './video.errors';
+import type { BaseFileInfo } from '../common/schemas';
+import path from 'path';
 
 const createTempFilename = util.promisify(tmp.tmpName);
 
@@ -23,6 +25,7 @@ type VideoResizeOptions = {
 
 const VIDEO_TYPE = 'video';
 const THUMBNAIL_EXTENSION = 'png';
+const THUMBNAIL_MIME_TYPE = 'image/png';
 
 export class VideoService {
   constructor() {
@@ -118,9 +121,13 @@ export class VideoService {
 
   public async thumbnail(
     file: Readable,
-    options: { second: number },
-  ): Promise<Stream> {
+    options: { second: number, fileName: string },
+  ): Promise<{ file: Stream, fileInfo: BaseFileInfo }> {
     const tempFileName = `${await createTempFilename()}.${THUMBNAIL_EXTENSION}`;
+    const fileInfo = {
+      fileName: `${path.basename(options.fileName, path.extname(options.fileName))}.${THUMBNAIL_EXTENSION}`,
+      mimeType: THUMBNAIL_MIME_TYPE,
+    };
 
     return await new Promise((resolve, reject) => {
       ffmpeg()
@@ -132,7 +139,7 @@ export class VideoService {
           reject(err);
         })
         .on('end', () => {
-          resolve(fs.createReadStream(tempFileName));
+          resolve({ file: fs.createReadStream(tempFileName), fileInfo });
         })
         .run();
     });

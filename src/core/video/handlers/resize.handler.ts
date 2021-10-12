@@ -43,35 +43,39 @@ export const createResizeHandler = (
       const adapter = getAdapter(adapterName);
       const resizeOptions = request.query;
       const videoService = new VideoService();
+      let file, fileToProcess;
 
       // If `codecName` is provided we can operate directly on streams which is faster
       // Without `codecName` video file needs to be saved to resolve the codec
       if (resizeOptions.codecName) {
-        const fileToProcess = await request.file();
+        fileToProcess = await request.file();
 
-        const file = await videoService.resizeStream(fileToProcess.file, {
+        file = await videoService.resizeStream(fileToProcess.file, {
           height: resizeOptions.height,
           width: resizeOptions.width,
           codecName: resizeOptions.codecName,
         });
-
-        const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.video, requestBody: request.body });
-        return await handleResponse(adapterResult, reply);
       } else {
-        const [fileToProcess] = await request.saveRequestFiles();
+        [fileToProcess] = await request.saveRequestFiles();
 
         if (!fileToProcess) {
           throw Boom.badRequest(Errors.FileIsRequired);
         }
 
-        const file = await videoService.resizeFile(fileToProcess.filepath, {
+        file = await videoService.resizeFile(fileToProcess.filepath, {
           height: resizeOptions.height,
           width: resizeOptions.width,
         });
 
-        const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.video, requestBody: request.body });
-        return await handleResponse(adapterResult, reply);
       }
+      const adapterResult = await adapter.handleFile({
+        file,
+        fileType: FileTypeEnum.video,
+        mimeType: fileToProcess.mimetype,
+        fileName: fileToProcess.filename,
+        requestBody: request.body,
+      });
+      return await handleResponse(adapterResult, reply);
     },
   );
 };

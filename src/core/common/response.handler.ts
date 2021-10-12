@@ -4,6 +4,12 @@ import Boom from 'boom';
 
 export const handleResponse = async (adapterResult: AdapterResult, reply: FastifyReply): Promise<void> => {
   if (adapterResult.file) {
+    if (adapterResult?.info?.contentType) {
+      reply.header('Content-Type', adapterResult.info.contentType)
+    }
+    if (adapterResult?.info?.fileName) {
+      reply.header('Content-Disposition', 'inline; filename="' + adapterResult.info.fileName + '"')
+    }
     reply
       .send(adapterResult.file)
     ;

@@ -53,7 +53,13 @@ export const createResizeHandler = (
         width: resizeOptions.width,
       });
 
-      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.image, requestBody: request.body });
+      const adapterResult = await adapter.handleFile({
+        file,
+        fileType: FileTypeEnum.image,
+        mimeType: fileToProcess.mimetype,
+        fileName: fileToProcess.filename,
+        requestBody: request.body,
+      });
       return await handleResponse(adapterResult, reply);
     },
   );

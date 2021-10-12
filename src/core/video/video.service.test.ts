@@ -72,7 +72,7 @@ describe('VideoService', () => {
   describe('#thumbnail', () => {
     it('should create thumbnail of passed file', async () => {
       const video = await getTestVideo();
-      const thumbnail = await videoService.thumbnail(video, { second: 1 });
+      const { file: thumbnail } = await videoService.thumbnail(video, { second: 1, fileName: 'test-video.mp4' });
 
       const expectedImage = await jimp.read(
         await streamToBuffer(
