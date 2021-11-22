@@ -18,11 +18,6 @@ import path from 'path';
 
 const createTempFilename = util.promisify(tmp.tmpName);
 
-interface File {
-    path: string,
-    format: string,
-}
-
 const THUMBNAIL_EXTENSION = 'png';
 const THUMBNAIL_MIME_TYPE = 'image/png';
 
@@ -33,14 +28,17 @@ export class VideoService {
   }
 
   public async resizeFile(
-    file: File,
+    filePath: string,
     options: ResizeOptions,
   ): Promise<Stream> {
+    const { ext } = path.parse(filePath);
+    const format = ext.substring(1);
+
     return ffmpeg()
-      .input(file.path)
+      .input(filePath)
       .size(`${options.height}x${options.width}`)
-      .toFormat(file.format)
-    // https://github.com/fluent-ffmpeg/node-fluent-ffmpeg/issues/932
+      .toFormat(format)
+      // https://github.com/fluent-ffmpeg/node-fluent-ffmpeg/issues/932
       .outputOptions('-movflags frag_keyframe+empty_moov')
       .pipe();
   }

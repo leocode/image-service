@@ -8,7 +8,6 @@ import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
 import { FileTypeEnum } from '../../../adapters/adapter.types';
-import * as mime from 'mime-types';
 
 type ResizeQuery = { width: number; height: number; codecName: string };
 
@@ -49,19 +48,11 @@ export const createResizeHandler = (
         throw Boom.badRequest(Errors.FileIsRequired);
       }
 
-      const format = mime.extension(fileToProcess.mimetype);
-
-      if (!format) {
-        throw Boom.badRequest(Errors.MimeTypeNotRecognized);
-      }
-
-      const file = await videoService.resizeFile({
-        format,
-        path: fileToProcess.filepath,
-      }, {
-        height: resizeOptions.height,
-        width: resizeOptions.width,
-      });
+      const file = await videoService.resizeFile(fileToProcess.filepath,
+        {
+          height: resizeOptions.height,
+          width: resizeOptions.width,
+        });
 
       const adapterResult = await adapter.handleFile({
         file,

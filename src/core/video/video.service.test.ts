@@ -23,7 +23,7 @@ describe('VideoService', () => {
       const expectedDimensions = 100;
 
       // when
-      const resizedVideo = await videoService.resizeFile({ path: TEST_VIDEO_PATH, format: 'mp4' }, {
+      const resizedVideo = await videoService.resizeFile(TEST_VIDEO_PATH, {
         height: expectedDimensions,
         width: expectedDimensions,
       });
