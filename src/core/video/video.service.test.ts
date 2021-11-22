@@ -46,7 +46,7 @@ describe('VideoService', () => {
       const metadata = await videoService.metadata(video);
 
       expect(metadata).toMatchObject({
-        duration: '3.34 s',
+        duration: 3.337,
         orientation: Orientation.Landscape,
         width: 1920,
         height: 1080,
