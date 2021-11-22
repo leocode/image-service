@@ -55,7 +55,7 @@ export const createResizeHandler = (
 
       const adapterResult = await adapter.handleFile({
         file,
-        fileType: FileTypeEnum.image,
+        fileType: FileTypeEnum.Image,
         mimeType: fileToProcess.mimetype,
         fileName: fileToProcess.filename,
         requestBody: request.body,

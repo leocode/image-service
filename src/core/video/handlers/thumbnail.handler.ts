@@ -53,7 +53,7 @@ export const createThumbnailHandler = (
       });
       const adapterResult = await adapter.handleFile({
         file,
-        fileType: FileTypeEnum.image,
+        fileType: FileTypeEnum.Image,
         requestBody: request.body,
         ...thumbnailInfo,
       });

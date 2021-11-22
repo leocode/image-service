@@ -8,6 +8,7 @@ import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
 import { FileTypeEnum } from '../../../adapters/adapter.types';
+import * as mime from 'mime-types';
 
 type ResizeQuery = { width: number; height: number; codecName: string };
 
@@ -16,7 +17,6 @@ const resizeQuerySchema = {
   properties: {
     height: { type: 'number' },
     width: { type: 'number' },
-    codecName: { type: 'string' },
   },
   required: ['height', 'width'],
 };
@@ -43,34 +43,29 @@ export const createResizeHandler = (
       const adapter = getAdapter(adapterName);
       const resizeOptions = request.query;
       const videoService = new VideoService();
-      let file, fileToProcess;
+      const [fileToProcess] = await request.saveRequestFiles();
 
-      // If `codecName` is provided we can operate directly on streams which is faster
-      // Without `codecName` video file needs to be saved to resolve the codec
-      if (resizeOptions.codecName) {
-        fileToProcess = await request.file();
-
-        file = await videoService.resizeStream(fileToProcess.file, {
-          height: resizeOptions.height,
-          width: resizeOptions.width,
-          codecName: resizeOptions.codecName,
-        });
-      } else {
-        [fileToProcess] = await request.saveRequestFiles();
-
-        if (!fileToProcess) {
-          throw Boom.badRequest(Errors.FileIsRequired);
-        }
-
-        file = await videoService.resizeFile(fileToProcess.filepath, {
-          height: resizeOptions.height,
-          width: resizeOptions.width,
-        });
-
+      if (!fileToProcess) {
+        throw Boom.badRequest(Errors.FileIsRequired);
       }
+
+      const format = mime.extension(fileToProcess.mimetype);
+
+      if (!format) {
+        throw Boom.badRequest(Errors.MimeTypeNotRecognized);
+      }
+
+      const file = await videoService.resizeFile({
+        format,
+        path: fileToProcess.filepath,
+      }, {
+        height: resizeOptions.height,
+        width: resizeOptions.width,
+      });
+
       const adapterResult = await adapter.handleFile({
         file,
-        fileType: FileTypeEnum.video,
+        fileType: FileTypeEnum.Video,
         mimeType: fileToProcess.mimetype,
         fileName: fileToProcess.filename,
         requestBody: request.body,

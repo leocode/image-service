@@ -12,7 +12,7 @@ Content-Type: image/jpg
 --WebAppBoundary--
 
 > {%
-    client.test("Request executed successfully", function() {
+client.test("Request executed successfully", function() {
         client.assert(response.status === 200, "Response status is not 200");
     });
 
@@ -23,32 +23,13 @@ Content-Type: image/jpg
 
     client.test("Response body is an object with properties", function() {
         var body = response.body;
+
+        print(JSON.stringify(body, undefined, 2));
+
         client.assert(body.width, "Expected 'width' in response body");
         client.assert(body.height, "Expected 'height' in response body");
         client.assert(body.mimeType, "Expected 'mimeType' in response body");
         client.assert(body.orientation, "Expected 'orientation' in response body");
-    });
-%}
-
-###
-POST http://localhost:3000/image/request-reply/thumbnail?height=50&width=50
-Content-Type: multipart/form-data; boundary=WebAppBoundary
-
---WebAppBoundary
-Content-Disposition: form-data; name="file"; filename="test-image.jpg"
-Content-Type: image/jpg
-
-< ./test/resources/test-image.jpg
---WebAppBoundary--
-
-> {%
-    client.test("Request executed successfully", function() {
-        client.assert(response.status === 200, "Response status is not 200");
-    });
-
-    client.test("Response content-type is json", function() {
-        var type = response.contentType.mimeType;
-        client.assert(type === "image/jpg", "Expected 'image/jpg' but received '" + type + "'");
     });
 %}
 
@@ -68,7 +49,7 @@ Content-Type: image/jpg
         client.assert(response.status === 200, "Response status is not 200");
     });
 
-    client.test("Response content-type is json", function() {
+    client.test("Response content-type is image/jpg", function() {
         var type = response.contentType.mimeType;
         client.assert(type === "image/jpg", "Expected 'image/jpg' but received '" + type + "'");
     });
@@ -90,13 +71,11 @@ Content-Type: image/jpg
         client.assert(response.status === 200, "Response status is not 200");
     });
 
-    client.test("Response content-type is json", function() {
+    client.test("Response content-type is image/jpg", function() {
         var type = response.contentType.mimeType;
         client.assert(type === "image/jpg", "Expected 'image/jpg' but received '" + type + "'");
     });
 %}
-
-
 
 ### VIDEO ###
 POST http://localhost:3000/video/metadata
@@ -121,6 +100,9 @@ Content-Type: video/mp4
 
     client.test("Response body is an object with properties", function() {
         var body = response.body;
+
+        print(JSON.stringify(body, undefined, 2));
+
         client.assert(body.width, "Expected 'width' in response body");
         client.assert(body.height, "Expected 'height' in response body");
         client.assert(body.duration, "Expected 'duration' in response body");
@@ -145,7 +127,7 @@ Content-Type: video/mp4
         client.assert(response.status === 200, "Response status is not 200");
     });
 
-    client.test("Response content-type is json", function() {
+    client.test("Response content-type is image/png", function() {
         var type = response.contentType.mimeType;
         client.assert(type === "image/png", "Expected 'image/png' but received '" + type + "'");
     });
@@ -167,10 +149,8 @@ Content-Type: video/mp4
         client.assert(response.status === 200, "Response status is not 200");
     });
 
-    client.test("Response content-type is json", function() {
+    client.test("Response content-type is video/mp4", function() {
         var type = response.contentType.mimeType;
         client.assert(type === "video/mp4", "Expected 'video/mp4' but received '" + type + "'");
     });
 %}
-
-###

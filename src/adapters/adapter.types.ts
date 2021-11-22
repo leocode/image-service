@@ -2,8 +2,8 @@ import type { Stream } from 'stream';
 import { requestReplyAdapter } from './requestReply.adapter';
 
 export const enum FileTypeEnum {
-  image = 'image',
-  video = 'video',
+  Image = 'image',
+  Video = 'Video',
 }
 
 export enum AdapterEnum {

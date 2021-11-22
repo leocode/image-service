@@ -11,7 +11,7 @@ describe('RequestReplyAdapter', () => {
 
       const adapterResult = await requestReplyAdapter.handleFile({
         file: image,
-        fileType: FileTypeEnum.image,
+        fileType: FileTypeEnum.Image,
         fileName: 'test-image.jpg',
         mimeType: 'image/jpg',
         requestBody: {},
@@ -27,7 +27,7 @@ describe('RequestReplyAdapter', () => {
 
       const adapterResult = await requestReplyAdapter.handleFile({
         file: video,
-        fileType: FileTypeEnum.video,
+        fileType: FileTypeEnum.Video,
         fileName: 'test-video.mp4',
         mimeType: 'video/mp4',
         requestBody: {},
