@@ -8,7 +8,7 @@ export const handleResponse = async (adapterResult: AdapterResult, reply: Fastif
       reply.header('Content-Type', adapterResult.info.contentType)
     }
     if (adapterResult?.info?.fileName) {
-      reply.header('Content-Disposition', 'inline; filename="' + adapterResult.info.fileName + '"')
+      reply.header('Content-Disposition', `inline; filename="${adapterResult.info.fileName}"`)
     }
     reply
       .send(adapterResult.file)
