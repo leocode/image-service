@@ -1,4 +1,5 @@
-// run the server first
+// the API tests work in IntelliJ WebStorm (not sure if they can be run out-of-the-box in other IDE/environment)
+// before running tests, make sure the API server is running (`yarn start`)
 
 ### image/metadata
 POST http://localhost:3000/image/metadata
