@@ -47,10 +47,16 @@ export const createThumbnailHandler = (
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
 
-      const file = await videoService.thumbnail(fileToProcess.file, {
+      const { file, fileInfo: thumbnailInfo } = await videoService.thumbnail(fileToProcess.file, {
         second: request.query.second ?? DEFAULT_THUMBNAIL_SECOND,
+        fileName: fileToProcess.filename,
       });
-      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.video, requestBody: request.body });
+      const adapterResult = await adapter.handleFile({
+        file,
+        fileType: FileTypeEnum.Image,
+        requestBody: request.body,
+        ...thumbnailInfo,
+      });
       return await handleResponse(adapterResult, reply);
     },
   );

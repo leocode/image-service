@@ -4,6 +4,7 @@ import {
   getVideoMetadata,
   streamToBuffer,
   TEST_VIDEO_1_SECOND_SCREENSHOT_PATH,
+  TEST_VIDEO_PATH,
 } from '../../../test/test.utils';
 import * as fs from 'fs';
 import jimp from 'jimp';
@@ -16,21 +17,25 @@ describe('VideoService', () => {
   });
 
   describe('#resize', () => {
-    it('should resize passed video', async () => {
+    it('should resize passed video file', async () => {
+      // on windows there could be EOF error - check https://github.com/fluent-ffmpeg/node-fluent-ffmpeg/pull/985
+      // given
       const expectedDimensions = 100;
-      const video = await getTestVideo();
 
-      const resizedVideo = videoService.resizeStream(video, {
+      // when
+      const resizedVideo = await videoService.resizeFile(TEST_VIDEO_PATH, {
         height: expectedDimensions,
         width: expectedDimensions,
-        codecName: 'h264',
       });
 
+      // then
       const resizedVideoMetadata = await getVideoMetadata(resizedVideo);
       const [videoStream] = resizedVideoMetadata.streams;
 
-      expect(videoStream.height).toEqual(expectedDimensions);
-      expect(videoStream.width).toEqual(expectedDimensions);
+      expect(videoStream).toMatchObject({
+        height: expectedDimensions,
+        width: expectedDimensions,
+      });
     });
   });
 
@@ -41,7 +46,7 @@ describe('VideoService', () => {
       const metadata = await videoService.metadata(video);
 
       expect(metadata).toMatchObject({
-        duration: '3.34 s',
+        duration: 3.337,
         orientation: Orientation.Landscape,
         width: 1920,
         height: 1080,
@@ -53,7 +58,7 @@ describe('VideoService', () => {
   describe('#thumbnail', () => {
     it('should create thumbnail of passed file', async () => {
       const video = await getTestVideo();
-      const thumbnail = await videoService.thumbnail(video, { second: 1 });
+      const { file: thumbnail } = await videoService.thumbnail(video, { second: 1, fileName: 'test-video.mp4' });
 
       const expectedImage = await jimp.read(
         await streamToBuffer(

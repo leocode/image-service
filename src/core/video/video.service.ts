@@ -2,7 +2,6 @@ import type { ResizeOptions } from 'sharp';
 import type { Readable, Stream } from 'stream';
 import ffmpegBinary from '@ffmpeg-installer/ffmpeg';
 import ffprobeBinary from '@ffprobe-installer/ffprobe';
-import type { FfprobeData } from 'fluent-ffmpeg';
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs';
 import tmp from 'tmp';
@@ -14,15 +13,13 @@ import Boom from 'boom';
 import type { VideoMetadata } from './video.types';
 import { Orientation } from '../common/common.types';
 import { VideoErrors } from './video.errors';
+import type { BaseFileInfo } from '../common/schemas';
+import path from 'path';
 
 const createTempFilename = util.promisify(tmp.tmpName);
 
-type VideoResizeOptions = {
-  codecName: string;
-} & ResizeOptions;
-
-const VIDEO_TYPE = 'video';
 const THUMBNAIL_EXTENSION = 'png';
+const THUMBNAIL_MIME_TYPE = 'image/png';
 
 export class VideoService {
   constructor() {
@@ -30,27 +27,19 @@ export class VideoService {
     ffmpeg.setFfprobePath(ffprobeBinary.path);
   }
 
-  public resizeStream(file: Readable, options: VideoResizeOptions): Stream {
-    return ffmpeg()
-      .input(file)
-      .size(`${options.height}x${options.width}`)
-      .format(options.codecName)
-      .pipe();
-  }
-
   public async resizeFile(
     filePath: string,
     options: ResizeOptions,
   ): Promise<Stream> {
-    const codecName = await this.getCodecName(fs.createReadStream(filePath));
+    const { ext } = path.parse(filePath);
+    const format = ext.substring(1);
 
-    if (!codecName) {
-      throw Boom.badRequest(VideoErrors.CannotResolveCodecName);
-    }
-
-    return ffmpeg(filePath)
+    return ffmpeg()
+      .input(filePath)
       .size(`${options.height}x${options.width}`)
-      .format(codecName)
+      .toFormat(format)
+      // https://github.com/fluent-ffmpeg/node-fluent-ffmpeg/issues/932
+      .outputOptions('-movflags frag_keyframe+empty_moov')
       .pipe();
   }
 
@@ -79,7 +68,7 @@ export class VideoService {
       };
       const exifToolProcess = execFile(
         exiftool,
-        ['-json', '-'],
+        ['-json', '-n', '-'],
         extractMetadataFromExifTool,
       );
 
@@ -93,34 +82,15 @@ export class VideoService {
     });
   }
 
-  public async getFfprobeData(file: Readable): Promise<FfprobeData> {
-    return await new Promise((resolve, reject) => {
-      ffmpeg()
-        .input(file)
-        .ffprobe((err, data) => {
-          if (err) {
-            reject(err);
-          }
-
-          resolve(data);
-        });
-    });
-  }
-
-  public async getCodecName(file: Readable): Promise<string | undefined> {
-    const metadata = await this.getFfprobeData(file);
-    const videoStream = metadata.streams.find(
-      (stream) => stream.codec_type === VIDEO_TYPE,
-    );
-
-    return videoStream?.codec_name;
-  }
-
   public async thumbnail(
     file: Readable,
-    options: { second: number },
-  ): Promise<Stream> {
+    options: { second: number, fileName: string },
+  ): Promise<{ file: Stream, fileInfo: BaseFileInfo }> {
     const tempFileName = `${await createTempFilename()}.${THUMBNAIL_EXTENSION}`;
+    const fileInfo = {
+      fileName: `${path.basename(options.fileName, path.extname(options.fileName))}.${THUMBNAIL_EXTENSION}`,
+      mimeType: THUMBNAIL_MIME_TYPE,
+    };
 
     return await new Promise((resolve, reject) => {
       ffmpeg()
@@ -132,7 +102,7 @@ export class VideoService {
           reject(err);
         })
         .on('end', () => {
-          resolve(fs.createReadStream(tempFileName));
+          resolve({ file: fs.createReadStream(tempFileName), fileInfo });
         })
         .run();
     });

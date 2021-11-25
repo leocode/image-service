@@ -7,7 +7,7 @@
     "start": "node dist/src/core/index.js",
     "lint": "eslint src/**/*.ts",
     "test": "jest",
-    "start:dev": "ts-node-dev src/core/index.ts -P tsconfig.json"
+    "start:dev": "ts-node-dev -P tsconfig.json --inspect -- src/core/index.ts"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "1.1.0",
