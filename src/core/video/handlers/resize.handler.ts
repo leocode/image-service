@@ -1,13 +1,12 @@
 import type { AdapterParams } from '../../common/schemas';
 import { adapterParamsSchema } from '../../common/schemas';
 import { getAdapter } from '../../../adapters/adapter.utils';
-import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
-import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
 import { FileTypeEnum } from '../../../adapters/adapter.types';
+import type { CommonHandlerParams } from '../../common/common.handler';
 
 type ResizeQuery = { width: number; height: number; codecName: string };
 
@@ -21,11 +20,7 @@ const resizeQuerySchema = {
   required: ['height', 'width'],
 };
 
-export const createResizeHandler = (
-  path: string,
-  fastify: FastifyInstance,
-  options: { baseSchema: FastifySchema },
-) => {
+export const createResizeHandler = ({ path, fastify, options }: CommonHandlerParams) => {
   fastify.post<{
     Params: AdapterParams;
     Querystring: ResizeQuery;
@@ -55,7 +50,7 @@ export const createResizeHandler = (
           codecName: resizeOptions.codecName,
         });
 
-        const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.video, requestBody: request.body });
+        const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.Video, requestBody: request.body });
         return await handleResponse(adapterResult, reply);
       } else {
         const [fileToProcess] = await request.saveRequestFiles();
@@ -69,7 +64,7 @@ export const createResizeHandler = (
           width: resizeOptions.width,
         });
 
-        const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.video, requestBody: request.body });
+        const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.Video, requestBody: request.body });
         return await handleResponse(adapterResult, reply);
       }
     },

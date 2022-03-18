@@ -2,13 +2,12 @@ import type { AdapterParams } from '../../common/schemas';
 import { adapterParamsSchema } from '../../common/schemas';
 import { getAdapter } from '../../../adapters/adapter.utils';
 import { ImageService } from '../image.service';
-import type { FastifyInstance } from 'fastify';
 import type { Region } from 'sharp';
-import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
 import { FileTypeEnum } from '../../../adapters/adapter.types';
+import type { CommonHandlerParams } from '../../common/common.handler';
 
 const cropQuerySchema = {
   type: 'object',
@@ -20,11 +19,7 @@ const cropQuerySchema = {
   },
 };
 
-export const createCropHandler = (
-  path: string,
-  fastify: FastifyInstance,
-  options: { baseSchema: FastifySchema },
-) => {
+export const createCropHandler = ({ path, fastify, options }: CommonHandlerParams) => {
   fastify.post<{
     Params: AdapterParams;
     Querystring: Region;
@@ -56,7 +51,7 @@ export const createCropHandler = (
         width,
       });
 
-      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.image, requestBody: request.body });
+      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.Image, requestBody: request.body });
       return await handleResponse(adapterResult, reply);
     },
   );

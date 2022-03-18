@@ -1,6 +1,4 @@
 import { ImageService } from '../image.service';
-import type { FastifyInstance } from 'fastify';
-import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { getAdapter } from '../../../adapters/adapter.utils';
@@ -8,6 +6,7 @@ import type { AdapterParams } from '../../common/schemas';
 import { adapterParamsSchema } from '../../common/schemas';
 import { handleResponse } from '../../common/response.handler';
 import { FileTypeEnum } from '../../../adapters/adapter.types';
+import type { CommonHandlerParams } from '../../common/common.handler';
 
 const thumbnailQuerySchema = {
   type: 'object',
@@ -19,11 +18,7 @@ const thumbnailQuerySchema = {
 
 type ThumbnailQuery = { width: number; height: number };
 
-export const createThumbnailHandler = (
-  path: string,
-  fastify: FastifyInstance,
-  options: { baseSchema: FastifySchema },
-) => {
+export const createThumbnailHandler = ({ path, fastify, options }: CommonHandlerParams) => {
   fastify.post<{
     Params: AdapterParams;
     Querystring: ThumbnailQuery;
@@ -48,12 +43,12 @@ export const createThumbnailHandler = (
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
 
-      const file = await imageService.resize(fileToProcess.file, {
+      const file = imageService.resize(fileToProcess.file, {
         height,
         width,
       });
 
-      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.image, requestBody: request.body });
+      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.Image, requestBody: request.body });
       return await handleResponse(adapterResult, reply);
     },
   );

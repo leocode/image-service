@@ -60,7 +60,7 @@ export class VideoService {
         error: ExecFileException | null,
         stdout: string,
         stderr: string
-      ) => void = (error, stdout, stderr) => {
+      ) => void = (error, stdout) => {
         if (error) {
           reject(error);
         }

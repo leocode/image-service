@@ -1,6 +1,4 @@
-import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
-import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
 import { handleResponse } from '../../common/response.handler';
@@ -8,6 +6,7 @@ import { getAdapter } from '../../../adapters/adapter.utils';
 import type { AdapterParams } from '../../common/schemas';
 import { adapterParamsSchema } from '../../common/schemas';
 import { FileTypeEnum } from '../../../adapters/adapter.types';
+import type { CommonHandlerParams } from '../../common/common.handler';
 
 const thumbnailQuerySchema = {
   type: 'object',
@@ -19,11 +18,7 @@ const thumbnailQuerySchema = {
 type ThumbnailQuery = { second: number };
 const DEFAULT_THUMBNAIL_SECOND = 1;
 
-export const createThumbnailHandler = (
-  path: string,
-  fastify: FastifyInstance,
-  options: { baseSchema: FastifySchema },
-) => {
+export const createThumbnailHandler = ({ path, fastify, options }: CommonHandlerParams) => {
   fastify.post<{
     Params: AdapterParams;
     Querystring: ThumbnailQuery;
@@ -50,7 +45,7 @@ export const createThumbnailHandler = (
       const file = await videoService.thumbnail(fileToProcess.file, {
         second: request.query.second ?? DEFAULT_THUMBNAIL_SECOND,
       });
-      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.video, requestBody: request.body });
+      const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.Video, requestBody: request.body });
       return await handleResponse(adapterResult, reply);
     },
   );

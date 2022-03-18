@@ -1,14 +1,9 @@
-import type { FastifyInstance } from 'fastify';
 import { VideoService } from '../video.service';
-import type { FastifySchema } from 'fastify/types/schema';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
+import type { CommonHandlerParams } from '../../common/common.handler';
 
-export const createMetadataHandler = (
-  path: string,
-  fastify: FastifyInstance,
-  options: { baseSchema: FastifySchema },
-) => {
+export const createMetadataHandler = ({ path, fastify, options }: CommonHandlerParams) => {
   fastify.post(path, { schema: options.baseSchema }, async (request) => {
     const fileToProcess = await request.file();
 

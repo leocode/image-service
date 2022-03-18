@@ -2,19 +2,19 @@ import type { Stream } from 'stream';
 import { requestReplyAdapter } from './requestReply.adapter';
 
 export const enum FileTypeEnum {
-  image = 'image',
-  video = 'video',
+  Image = 'Image',
+  Video = 'Video',
 }
 
 export enum AdapterEnum {
-  'RequestReply' = 'request-reply',
+  RequestReply = 'request-reply',
 }
 
 export const AdapterMap = {
   [AdapterEnum.RequestReply]: requestReplyAdapter,
 } as const;
 
-export const ADAPTERS = Object.values(AdapterEnum);
+export const AVAILABLE_ADAPTERS = Object.values(AdapterEnum);
 
 export type BasicAdapterCommand<T> = {
   file: Stream,

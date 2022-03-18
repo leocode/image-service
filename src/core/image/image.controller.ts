@@ -10,8 +10,8 @@ export const imageController = async (fastify: FastifyInstance) => {
     consumes: ['multipart/form-data'],
   };
 
-  createMetadataHandler('/metadata', fastify, { baseSchema });
-  createThumbnailHandler('/:adapter/thumbnail', fastify, { baseSchema });
-  createCropHandler('/:adapter/crop', fastify, { baseSchema });
-  createResizeHandler('/:adapter/resize', fastify, { baseSchema });
+  createMetadataHandler({ path: '/metadata', fastify, options: { baseSchema } });
+  createThumbnailHandler({ path: '/:adapter/thumbnail', fastify, options: { baseSchema } });
+  createCropHandler({ path: '/:adapter/crop', fastify, options: { baseSchema } });
+  createResizeHandler({ path: '/:adapter/resize', fastify, options: { baseSchema } });
 };
