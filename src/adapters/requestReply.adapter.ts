@@ -1,16 +1,5 @@
 import type { AdapterInterface } from './adapter.interface';
 
 export const requestReplyAdapter: AdapterInterface = {
-  handleFile: async (command) => {
-    const info: any = {
-      fileName: command.fileName,
-    };
-    if ('*/*' !== command.mimeType) {
-      info.contentType = command.mimeType;
-    }
-    return {
-      file: command.file,
-      info,
-    };
-  },
+  handleFile: async (command) => ({file: command.file, info: command.info}),
 };

@@ -4,10 +4,16 @@ import type { Readable, Stream } from 'stream';
 import type { ExecFileException } from 'child_process';
 import { execFile } from 'child_process';
 import exiftool from '@mcmics/dist-exiftool';
-import type { ImageMetadata } from './image.types';
 import Boom from 'boom';
 import { ImageErrors } from './image.errors';
 import { Orientation } from '../common/common.types';
+
+export type ImageMetadata = {
+  width: number;
+  height: number;
+  orientation: Orientation;
+  mimeType: string;
+};
 
 export class ImageService {
   public resize(file: Readable, options: ResizeOptions): Stream {
@@ -24,7 +30,7 @@ export class ImageService {
         error: ExecFileException | null,
         stdout: string,
         stderr: string
-      ) => void = (error, stdout, stderr) => {
+      ) => void = (error, stdout) => {
         if (error) {
           reject(error);
         }

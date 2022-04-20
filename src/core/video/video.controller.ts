@@ -9,9 +9,7 @@ export const videoController = async (fastify: FastifyInstance) => {
     consumes: ['multipart/form-data'],
   };
 
-  createMetadataHandler('/metadata', fastify, { baseSchema });
-
-  createResizeHandler('/:adapter/resize', fastify, { baseSchema });
-
-  createThumbnailHandler('/:adapter/thumbnail', fastify, { baseSchema });
+  createMetadataHandler({ path: '/metadata', fastify, options: { baseSchema } });
+  createResizeHandler({ path: '/:adapter/resize', fastify, options: { baseSchema } });
+  createThumbnailHandler({ path: '/:adapter/thumbnail', fastify, options: { baseSchema } });
 };

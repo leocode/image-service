@@ -1,11 +1,11 @@
-import { ADAPTERS } from '../../adapters/adapter.types';
+import { AVAILABLE_ADAPTERS } from '../../adapters/adapter.types';
 
 export const adapterParamsSchema = {
   type: 'object',
   properties: {
     adapter: {
       type: 'string',
-      enum: ADAPTERS,
+      enum: AVAILABLE_ADAPTERS,
     },
   },
 };

@@ -1,35 +1,34 @@
-import type { AdapterParams } from '../../common/schemas';
-import { adapterParamsSchema } from '../../common/schemas';
-import { getAdapter } from '../../../adapters/adapter.utils';
 import { ImageService } from '../image.service';
-import type { Region } from 'sharp';
 import Boom from 'boom';
 import { Errors } from '../../common/common.errors';
+import { getAdapter } from '../../../adapters/adapter.utils';
+import type { AdapterParams } from '../../common/schemas';
+import { adapterParamsSchema } from '../../common/schemas';
 import { handleResponse } from '../../common/response.handler';
 import { FileTypeEnum } from '../../../adapters/adapter.types';
 import type { CommonHandlerParams } from '../../common/common.handler';
 
-const cropQuerySchema = {
+const thumbnailQuerySchema = {
   type: 'object',
   properties: {
-    left: { type: 'number' },
-    top: { type: 'number' },
     width: { type: 'number' },
     height: { type: 'number' },
   },
 };
 
-export const createCropHandler = ({ path, fastify, options }: CommonHandlerParams) => {
+type ThumbnailQuery = { width: number; height: number };
+
+export const createThumbnailHandler = ({ path, fastify, options }: CommonHandlerParams) => {
   fastify.post<{
     Params: AdapterParams;
-    Querystring: Region;
+    Querystring: ThumbnailQuery;
   }>(
     path,
     {
       schema: {
         ...options.baseSchema,
         params: adapterParamsSchema,
-        querystring: cropQuerySchema,
+        querystring: thumbnailQuerySchema,
       },
     },
     async (request, reply) => {
@@ -39,14 +38,12 @@ export const createCropHandler = ({ path, fastify, options }: CommonHandlerParam
         throw Boom.badRequest(Errors.FileIsRequired);
       }
 
+      const { height, width } = request.query;
+      const imageService = new ImageService();
       const adapterName = request.params.adapter;
       const adapter = getAdapter(adapterName);
-      const { top, left, height, width } = request.query;
-      const imageService = new ImageService();
 
-      const file = await imageService.crop(fileToProcess.file, {
-        top,
-        left,
+      const file = imageService.resize(fileToProcess.file, {
         height,
         width,
       });

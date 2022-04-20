@@ -5,15 +5,17 @@ import { videoController } from './video/video.controller';
 import fastifyMultipart from 'fastify-multipart';
 import { setupSwagger } from '../docs/setup-swagger';
 
-function ajvPlugin(ajv: any) {
+const ajvPlugin = (ajv: any) => {
   ajv.addFormat('binary', { type: 'string', validate: () => true });
 
   return ajv;
-}
+};
+
 const server = fastify({ logger: true, ajv: { plugins: [ajvPlugin] } });
 
 server.register(require('fastify-boom'));
 server.register(fastifyMultipart);
+
 setupSwagger(server);
 
 server.register(imageController, { prefix: '/image' });
