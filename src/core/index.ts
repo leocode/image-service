@@ -15,6 +15,7 @@ const server = fastify({ logger: true, ajv: { plugins: [ajvPlugin] } });
 
 server.register(require('fastify-boom'));
 server.register(fastifyMultipart);
+
 setupSwagger(server);
 
 server.register(imageController, { prefix: '/image' });

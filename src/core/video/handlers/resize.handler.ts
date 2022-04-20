@@ -54,15 +54,15 @@ export const createResizeHandler = ({ path, fastify, options }: CommonHandlerPar
       } else {
         const [fileToProcess] = await request.saveRequestFiles();
 
-      if (!fileToProcess) {
-        throw Boom.badRequest(Errors.FileIsRequired);
-      }
+        if (!fileToProcess) {
+          throw Boom.badRequest(Errors.FileIsRequired);
+        }
 
-      const file = await videoService.resizeFile(fileToProcess.filepath,
-        {
-          height: resizeOptions.height,
-          width: resizeOptions.width,
-        });
+        const file = await videoService.resizeFile(fileToProcess.filepath,
+          {
+            height: resizeOptions.height,
+            width: resizeOptions.width,
+          });
 
         const adapterResult = await adapter.handleFile({ file, fileType: FileTypeEnum.Video, requestBody: request.body });
         return await handleResponse(adapterResult, reply);

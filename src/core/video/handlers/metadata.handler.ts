@@ -13,6 +13,8 @@ export const createMetadataHandler = ({ path, fastify, options }: CommonHandlerP
 
     const videoService = new VideoService();
 
-    return await videoService.metadata(fileToProcess.file);
+    const response = await videoService.metadata(fileToProcess.file);
+    await fileToProcess.toBuffer();
+    return response;
   });
 };
