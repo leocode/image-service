@@ -70,7 +70,6 @@ export class VideoService {
         .input(filePath)
         .toFormat('matroska')
         .size(`${options.height}x${options.width}`)
-        .outputOptions('-movflags frag_keyframe+empty_moov')
         .pipe();
     }
 
