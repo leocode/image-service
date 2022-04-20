@@ -15,7 +15,6 @@ const resizeQuerySchema = {
   properties: {
     height: { type: 'number' },
     width: { type: 'number' },
-    codecName: { type: 'string' },
   },
   required: ['height', 'width'],
 };
@@ -55,11 +54,12 @@ export const createResizeHandler = ({ path, fastify, options }: CommonHandlerPar
       } else {
         const [fileToProcess] = await request.saveRequestFiles();
 
-        if (!fileToProcess) {
-          throw Boom.badRequest(Errors.FileIsRequired);
-        }
+      if (!fileToProcess) {
+        throw Boom.badRequest(Errors.FileIsRequired);
+      }
 
-        const file = await videoService.resizeFile(fileToProcess.filepath, {
+      const file = await videoService.resizeFile(fileToProcess.filepath,
+        {
           height: resizeOptions.height,
           width: resizeOptions.width,
         });

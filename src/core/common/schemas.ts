@@ -11,3 +11,7 @@ export const adapterParamsSchema = {
 };
 
 export type AdapterParams = { adapter: string };
+export type BaseFileInfo = {
+  fileName: string,
+  mimeType: string,
+};

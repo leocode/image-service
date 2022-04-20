@@ -2,3 +2,6 @@ node_modules
 .git
 .idea
 .vscode
+.github
+rest-api-test.http
+test
