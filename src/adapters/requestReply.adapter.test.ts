@@ -9,13 +9,7 @@ describe('RequestReplyAdapter', () => {
     it('should return image file', async () => {
       const image = await getTestImage();
 
-      const adapterResult = await requestReplyAdapter.handleFile({
-        file: image,
-        fileType: FileTypeEnum.Image,
-        fileName: 'test-image.jpg',
-        mimeType: 'image/jpg',
-        requestBody: {},
-      });
+      const adapterResult = await requestReplyAdapter.handleFile({ file: image, fileType: FileTypeEnum.Image, requestBody: {}});
 
       expect(adapterResult).toMatchObject({
         file: image,
@@ -25,13 +19,7 @@ describe('RequestReplyAdapter', () => {
     it('should return video file', async () => {
       const video = await getTestVideo();
 
-      const adapterResult = await requestReplyAdapter.handleFile({
-        file: video,
-        fileType: FileTypeEnum.Video,
-        fileName: 'test-video.mp4',
-        mimeType: 'video/mp4',
-        requestBody: {},
-      });
+      const adapterResult = await requestReplyAdapter.handleFile({ file: video, fileType: FileTypeEnum.Video, requestBody: {}});
 
       expect(adapterResult).toMatchObject({
         file: video,
